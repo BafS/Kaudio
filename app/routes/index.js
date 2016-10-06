@@ -1,10 +1,12 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express')
+const router = express.Router()
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    res.send('respond with a resource');
-  // res.render('index', { title: 'Express' });
-});
+router.get('/', (req, res) => {
+  res.send(`
+    <h2>Welcom to Kaudio backend</h2>
+    Please use a valid API route.
+  `)
+})
 
-module.exports = router;
+module.exports = router
