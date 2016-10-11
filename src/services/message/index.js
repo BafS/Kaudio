@@ -47,6 +47,25 @@ module.exports = function () {
   // Get our initialize service to that we can bind hooks
   const messageService = app.service('/messages')
 
+  messageService.filter(function (data, connection, hook) {
+    // console.log('-FILTER-')
+
+    const messageUserId = hook.params.user._id
+    const currentUserFriends = connection.user.friends // Array
+
+    // console.log(messageUserId)
+    // console.log(currentUserFriends)
+
+    // Check friendship
+    // if (currentUserFriends.indexOf(messageUserId) === -1) {
+    if (currentUserFriends.includes(messageUserId)) {
+      console.log('no')
+      return false
+    }
+
+    return data
+  })
+
   // Set up our before hooks
   messageService.before(hooks.before)
 
