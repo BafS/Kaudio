@@ -13,6 +13,9 @@ const userSchema = new Schema({
 
   email: { type: String, required: true, unique: true }, // require
   password: { type: String, required: true }, // require
+  name: { type: String },
+  picture: { type: Schema.Types.Buffer },
+  friends: { type: Array }, // Array<ObjectId> // Schema.Types.DocumentArray ?
 
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }

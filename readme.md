@@ -1,4 +1,6 @@
-![Kaudio](http://i.imgur.com/oECtPvL.png)
+<center>
+    <img src="http://i.imgur.com/oECtPvL.png" style="max-width=600px">
+</center>
 
 > A web app audio player
 
