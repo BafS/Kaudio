@@ -1,11 +1,11 @@
 'use strict'
 
 // user-model.js - A mongoose model
-//
-// See http://mongoosejs.com/docs/models.html
 
+const idexists = require('mongoose-idexists')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 
 const userSchema = new Schema({
   facebookId: { type: String },
@@ -13,13 +13,19 @@ const userSchema = new Schema({
 
   email: { type: String, required: true, unique: true }, // require
   password: { type: String, required: true }, // require
-  name: { type: String },
-  picture: { type: Schema.Types.Buffer },
-  friends: { type: Array }, // Array<ObjectId> // Schema.Types.DocumentArray ?
+  name: String,
+  picture: String, // Link to GridFS db (TODO)
+
+  friends_ref: [{
+    type: ObjectId,
+    ref: 'user'
+  }],
 
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }
 })
+
+idexists.forSchema(userSchema)
 
 const userModel = mongoose.model('user', userSchema)
 
