@@ -1,5 +1,5 @@
 'use strict'
-const playlist = require('./playlist');
+const playlist = require('./playlist')
 const track = require('./track')
 const person = require('./person')
 const album = require('./album')
@@ -16,6 +16,12 @@ module.exports = function () {
   const app = this
 
   mongoose.connect(app.get('mongodb'))
+
+  mongoose.connection.on('error', function (err) {
+    console.error('Mongo error, be sure that MongoDB is running')
+    if (err) throw err
+  })
+
   mongoose.Promise = global.Promise
 
   app.configure(authentication)
@@ -25,5 +31,5 @@ module.exports = function () {
   app.configure(album)
   app.configure(person)
   app.configure(track)
-  app.configure(playlist);
+  app.configure(playlist)
 }
