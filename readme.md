@@ -1,5 +1,5 @@
 <center>
-    <img src="http://i.imgur.com/oECtPvL.png" style="max-width=600px">
+    <img src="http://i.imgur.com/oECtPvL.png" style="max-width:400px">
 </center>
 
 > A web app audio player
@@ -12,7 +12,7 @@ Kaudio is an open source web app based audio player.
 
 1. Make sure you have [NodeJS](https://nodejs.org/), [npm](https://www.npmjs.com/) and MongoDB installed.
 2. Install your dependencies `npm install`
-3. Start your app `npm start`
+3. Start your app `npm start` (and be sure that MongoDB is running)
 
 ## Testing
 
