@@ -25,9 +25,13 @@ exports.before = {
 exports.after = {
   all: [],
   find: [],
-  get: [],
+  get: [hooks.populate('tracks', {
+    service: 'tracks',
+    field: 'tracks_ref'
+  })],
   create: [],
   update: [],
   patch: [],
   remove: []
 }
+

@@ -30,7 +30,7 @@ const trackSchema = new Schema({
     }
   }],
 
-  file: String, // Link to GridFS db (TODO)
+  file: ObjectId, // Link to GridFS
 
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }

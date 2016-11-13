@@ -1,16 +1,17 @@
 'use strict'
+const picture = require('./picture')
+const audio = require('./audio')
 const playlist = require('./playlist')
 const track = require('./track')
 const person = require('./person')
 const album = require('./album')
 const artist = require('./artist')
-
 const message = require('./message')
 const user = require('./user')
-
 const mongoose = require('mongoose')
-
 const authentication = require('./authentication')
+const Grid = require('gridfs-stream')
+Grid.mongo = mongoose.mongo
 
 module.exports = function () {
   const app = this
@@ -32,4 +33,6 @@ module.exports = function () {
   app.configure(person)
   app.configure(track)
   app.configure(playlist)
+  app.configure(audio)
+  app.configure(picture)
 }

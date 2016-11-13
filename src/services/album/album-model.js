@@ -10,7 +10,7 @@ const ObjectId = Schema.Types.ObjectId
 const albumSchema = new Schema({
   title: { type: String, required: true },
   year: Number, // release year
-  coverArt: String, // Link to GridFS db (TODO)
+  coverArt: ObjectId, // Link to GridFS
 
   // if released by ONE artist (i.e. not a compilation)
   artist_ref: {

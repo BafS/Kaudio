@@ -37,11 +37,11 @@
     "feathers-socketio": "^1.4.1",
     "gridfs-stream": "^1.1.1",
     "mongoose": "^4.6.3",
-    "mongoose-harmony-gridfs": "^0.1.5",
     "mongoose-idexists": "^1.0.5",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",
+    "stream-to-promise": "^2.2.0",
     "winston": "^2.2.0"
   },
   "devDependencies": {
