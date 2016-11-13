@@ -1,0 +1,1091 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Kaudio DB seed",
+		"_postman_id": "84320995-f565-99c2-2aa4-0aefef5a0aed",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0. Init",
+			"description": "",
+			"item": [
+				{
+					"name": "Initialize environment variable",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": "postman.setEnvironmentVariable(\"email\", \"email\");\npostman.setEnvironmentVariable(\"password\", \"password\");\npostman.setEnvironmentVariable(\"name\", \"name\");\npostman.setEnvironmentVariable(\"year\", \"year\");\npostman.setEnvironmentVariable(\"origin\", \"origin\");\npostman.setEnvironmentVariable(\"title\", \"title\");\npostman.setEnvironmentVariable(\"public\", \"public\");\npostman.setEnvironmentVariable(\"friends_ref\", \"friends_ref\");\npostman.setEnvironmentVariable(\"artist_ref\", \"artist_ref\");\npostman.setEnvironmentVariable(\"album_ref\", \"album_ref\");\npostman.setEnvironmentVariable(\"tracks_ref\", \"tracks_ref\");\npostman.setEnvironmentVariable(\"user_ref\", \"user_ref\");"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Users",
+			"description": "",
+			"item": [
+				{
+					"name": "Register user (admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"super@admin.com\",\r\n\t\"{{password}}\" : \"adminPwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Register user (Alice)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"user_id_alice\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"alice@user.com\",\r\n\t\"{{password}}\" : \"alicePwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Register user (Bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"user_id_bob\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"bob@user.com\",\r\n\t\"{{password}}\" : \"bobPwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Register user (Charlie)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"user_id_charlie\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"charlie@user.com\",\r\n\t\"{{password}}\" : \"charliePwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get token (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_admin\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/auth/local",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"super@admin.com\",\r\n\t\"{{password}}\" : \"adminPwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get token (Alice)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_alice\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/auth/local",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"alice@user.com\",\r\n\t\"{{password}}\" : \"alicePwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get token (Bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_bob\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/auth/local",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"bob@user.com\",\r\n\t\"{{password}}\" : \"bobPwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Get token (Charlie)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_charlie\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/auth/local",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{email}}\" : \"charlie@user.com\",\r\n\t\"{{password}}\" : \"charliePwd\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create friendship (Alice->Bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users/{{user_id_alice}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_alice}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{friends_ref}}\": [\"{{user_id_bob}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create friendship (Bob->Alice, Bob->Charlie)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users/{{user_id_bob}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bob}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{friends_ref}}\": [\"{{user_id_alice}}\", \"{{user_id_charlie}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create friendship (Charlie->Bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/users/{{user_id_charlie}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_charlie}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{friends_ref}}\": [\"{{user_id_charlie}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Artists",
+			"description": "",
+			"item": [
+				{
+					"name": "Add artist (Bonobo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"artist_id_bonobo\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/artists",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{name}}\": \"Bonobo\",\r\n\t\"{{year}}\": 1999,\r\n\t\"{{origin}}\": \"Brighton, England, United Kingdom\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add artist (Goldmund)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"artist_id_goldmund\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/artists",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{name}}\": \"Goldmund\",\r\n\t\"{{year}}\": 2004,\r\n\t\"{{origin}}\": \"Boston, Massachusetts, United States\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add artist (Kavinsky)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"artist_id_kavinsky\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/artists",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"{{name}}\": \"Kavinsky\",\r\n\t\"{{year}}\": 2006,\r\n\t\"{{origin}}\": \"Seine-Saint-Denis, France\"\r\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Albums",
+			"description": "",
+			"item": [
+				{
+					"name": "Add album (The Malady Of Elegance / Goldmund)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_theMaladyOfElegance\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"The Malady Of Elegance\",\n\t\"{{year}}\": 2008,\n\t\"{{artist_ref}}\": \"{{artist_id_goldmund}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add album (Corduroy Road / Goldmund)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_corduroyRoad\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Corduroy Road\",\n\t\"{{year}}\": 2005,\n\t\"{{artist_ref}}\": \"{{artist_id_goldmund}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add album (The North Borders / Bonobo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_theNorthBorders\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"The North Borders\",\n\t\"{{year}}\": 2013,\n\t\"{{artist_ref}}\": \"{{artist_id_bonobo}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add album (OutRun / Kavinsky)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_outRun\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"OutRun\",\n\t\"{{year}}\": 2013,\n\t\"{{artist_ref}}\": \"{{artist_id_kavinsky}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Tracks",
+			"description": "",
+			"item": [
+				{
+					"name": "Add Track (Ba / Corduroy Road / Goldmund)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_ba\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Ba\",\n\t\"{{album_ref}}\": \"{{album_id_corduroyRoad}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Track (Door Of Our Home / Corduroy Road / Goldmund)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_doorOfOurHome\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Door Of Our Home\",\n\t\"{{album_ref}}\": \"{{album_id_corduroyRoad}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Track (Image-Autumn-Womb / The Malady Of Elegance / Goldmund)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_image-autumn-womb\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Image-Autumn-Womb\",\n\t\"{{album_ref}}\": \"{{album_id_theMaladyOfElegance}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Track (First Fires / The North Borders / Bonobo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_firstFires\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"First Fires\",\n\t\"{{album_ref}}\": \"{{album_id_theNorthBorders}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Track (Emkay / The North Borders / Bonobo)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_emkay\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Emkay\",\n\t\"{{album_ref}}\": \"{{album_id_theNorthBorders}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Track (Prelude / OutRun / Kavinsky)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_prelude\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Prelude\",\n\t\"{{album_ref}}\": \"{{album_id_outRun}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Add Track (Blizzard / OutRun / Kavinsky)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_blizzard\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/tracks",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{title}}\": \"Blizzard\",\n\t\"{{album_ref}}\": \"{{album_id_outRun}}\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Album (The Malady Of Elegance)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums/{{album_id_theMaladyOfElegance}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{tracks_ref}}\": [\"{{track_id_image-autumn-womb}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Album (Corduroy Road)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums/{{album_id_corduroyRoad}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{tracks_ref}}\": [\"{{track_id_ba}}\", \"{{track_id_doorOfOurHome}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Album (The North Borders)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums/{{album_id_theNorthBorders}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{tracks_ref}}\": [\"{{track_id_firstFires}}\", \"{{track_id_emkay}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Update Album (OutRun)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/albums/{{album_id_theNorthBorders}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_admin}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{tracks_ref}}\": [\"{{track_id_prelude}}\", \"{{track_id_blizzard}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Playlists",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Playlist (My first playlist / Alice)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"playlist_id_myFirstPlaylist\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/playlists",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_alice}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{name}}\": \"My first playlist\",\n\t\"{{public}}\": true,\n\t\"{{user_ref}}\": \"{{user_id_alice}}\",\n\t\"{{tracks_ref}}\": [\"{{track_id_ba}}\", \"{{track_id_firstFires}}\", \"{{track_id_prelude}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Create Playlist (Swag Music / Bob)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"playlist_id_swagMusic\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+							}
+						}
+					],
+					"request": {
+						"url": "http://127.0.0.1:3030/playlists",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{token_bob}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"{{name}}\": \"Swag Music\",\n\t\"{{public}}\": false,\n\t\"{{user_ref}}\": \"{{user_id_bob}}\",\n\t\"{{tracks_ref}}\": [\"{{track_id_emkay}}\", \"{{track_id_prelude}}\", \"{{track_id_blizzard}}\"]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
