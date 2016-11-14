@@ -1,7 +1,7 @@
 'use strict'
 
 const globalHooks = require('../../../hooks')
-const hooks = require('feathers-hooks')
+const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
 exports.before = {
@@ -29,7 +29,16 @@ exports.before = {
 exports.after = {
   all: [],
   find: [],
-  get: [],
+  get: [
+    hooks.populate('artist', {
+      service: 'artists',
+      field: 'artist_ref'
+    }),
+    hooks.remove(
+      'createdAt',
+      'updatedAt',
+      '__v',
+      'artist_ref')],
   create: [],
   update: [],
   patch: [],
