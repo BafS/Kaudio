@@ -18,14 +18,29 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"type": "text/javascript",
-								"exec": "postman.setEnvironmentVariable(\"email\", \"email\");\npostman.setEnvironmentVariable(\"password\", \"password\");\npostman.setEnvironmentVariable(\"name\", \"name\");\npostman.setEnvironmentVariable(\"year\", \"year\");\npostman.setEnvironmentVariable(\"origin\", \"origin\");\npostman.setEnvironmentVariable(\"title\", \"title\");\npostman.setEnvironmentVariable(\"public\", \"public\");\npostman.setEnvironmentVariable(\"friends_ref\", \"friends_ref\");\npostman.setEnvironmentVariable(\"artist_ref\", \"artist_ref\");\npostman.setEnvironmentVariable(\"album_ref\", \"album_ref\");\npostman.setEnvironmentVariable(\"tracks_ref\", \"tracks_ref\");\npostman.setEnvironmentVariable(\"user_ref\", \"user_ref\");"
+								"exec": [
+									"postman.setEnvironmentVariable(\"email\", \"email\");",
+									"postman.setEnvironmentVariable(\"password\", \"password\");",
+									"postman.setEnvironmentVariable(\"name\", \"name\");",
+									"postman.setEnvironmentVariable(\"year\", \"year\");",
+									"postman.setEnvironmentVariable(\"origin\", \"origin\");",
+									"postman.setEnvironmentVariable(\"title\", \"title\");",
+									"postman.setEnvironmentVariable(\"public\", \"public\");",
+									"postman.setEnvironmentVariable(\"friends_ref\", \"friends_ref\");",
+									"postman.setEnvironmentVariable(\"artist_ref\", \"artist_ref\");",
+									"postman.setEnvironmentVariable(\"album_ref\", \"album_ref\");",
+									"postman.setEnvironmentVariable(\"tracks_ref\", \"tracks_ref\");",
+									"postman.setEnvironmentVariable(\"user_ref\", \"user_ref\");"
+								]
 							}
 						}
 					],
@@ -54,7 +69,9 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -83,7 +100,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"user_id_alice\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"user_id_alice\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -112,7 +133,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"user_id_bob\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"user_id_bob\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -141,7 +166,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"user_id_charlie\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"user_id_charlie\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -170,7 +199,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_admin\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token_admin\", jsonData.token);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -199,7 +232,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_alice\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token_alice\", jsonData.token);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -228,7 +265,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_bob\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token_bob\", jsonData.token);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -257,7 +298,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"token_charlie\", jsonData.token);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token_charlie\", jsonData.token);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -286,13 +331,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/users/{{user_id_alice}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -320,13 +367,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/users/{{user_id_bob}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -354,13 +403,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/users/{{user_id_charlie}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -394,7 +445,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"artist_id_bonobo\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"artist_id_bonobo\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -428,7 +483,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"artist_id_goldmund\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"artist_id_goldmund\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -462,7 +521,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"artist_id_kavinsky\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"artist_id_kavinsky\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -502,7 +565,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_theMaladyOfElegance\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"album_id_theMaladyOfElegance\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -536,7 +603,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_corduroyRoad\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"album_id_corduroyRoad\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -570,7 +641,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_theNorthBorders\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"album_id_theNorthBorders\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -604,7 +679,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"album_id_outRun\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"album_id_outRun\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -644,7 +723,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_ba\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_ba\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -678,7 +761,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_doorOfOurHome\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_doorOfOurHome\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -712,7 +799,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_image-autumn-womb\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_image-autumn-womb\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -746,7 +837,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_firstFires\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_firstFires\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -780,7 +875,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_emkay\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_emkay\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -814,7 +913,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_prelude\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_prelude\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -848,7 +951,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"track_id_blizzard\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"track_id_blizzard\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -882,13 +989,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/albums/{{album_id_theMaladyOfElegance}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -916,13 +1025,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/albums/{{album_id_corduroyRoad}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -950,13 +1061,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/albums/{{album_id_theNorthBorders}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -984,13 +1097,15 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "tests[\"Status code is 200\"] = responseCode.code === 200;"
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
 							}
 						}
 					],
 					"request": {
 						"url": "http://127.0.0.1:3030/albums/{{album_id_theNorthBorders}}",
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -1024,7 +1139,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"playlist_id_myFirstPlaylist\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"playlist_id_myFirstPlaylist\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
@@ -1058,7 +1177,11 @@
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
-								"exec": "var jsonData = JSON.parse(responseBody);\npostman.setEnvironmentVariable(\"playlist_id_swagMusic\", jsonData._id);\ntests[\"Status code is 201\"] = responseCode.code === 201;"
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"playlist_id_swagMusic\", jsonData._id);",
+									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+								]
 							}
 						}
 					],
