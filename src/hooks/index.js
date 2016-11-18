@@ -16,6 +16,19 @@
 
 const defaults = {}
 
+// Possibility to perform a search on the given field
+// Eg: `/users?email[$search]=alice`
+exports.searchRegex = function () {
+  return (hook) => {
+    const query = hook.params.query
+    for (let field in query) {
+      if (query[field].$search && field.indexOf('$') === -1) {
+        query[field] = { $regex: new RegExp(query[field].$search) }
+      }
+    }
+  }
+}
+
 exports.updateDate = function (options) {
   return function (hook) {
     hook.data.updatedAt = new Date()

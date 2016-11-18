@@ -8,8 +8,8 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 const playlistSchema = new Schema({
-  name: { type: String, required: true },
-  public: {type: Boolean, required: true},
+  name: { type: String, required: true, trim: true },
+  public: { type: Boolean, required: true },
 
   user_ref: {
     type: ObjectId,

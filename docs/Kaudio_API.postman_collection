@@ -14,7 +14,7 @@
 				{
 					"name": "Index albums",
 					"request": {
-						"url": "http://127.0.0.1:3030/albums",
+						"url": "{{host}}:{{port}}/albums",
 						"method": "GET",
 						"header": [
 							{
@@ -34,7 +34,7 @@
 				{
 					"name": "Create album",
 					"request": {
-						"url": "http://127.0.0.1:3030/albums",
+						"url": "{{host}}:{{port}}/albums",
 						"method": "POST",
 						"header": [
 							{
@@ -95,7 +95,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\":\"test@test.com\",\n\t\"password\":\"test\"\n}"
+							"raw": "{\n\t\"email\":\"super@admin.com\",\n\t\"password\":\"adminPwd\"\n}"
 						},
 						"description": ""
 					},
@@ -129,7 +129,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\":\"test2@test.com\",\n\t\"password\":\"test\"\n}"
+							"raw": "{\n\t\"email\":\"alice@user.com\",\n\t\"password\":\"alicePwd\"\n}"
 						},
 						"description": ""
 					},
@@ -254,7 +254,7 @@
 				{
 					"name": "Get playlist",
 					"request": {
-						"url": "{{host}}:{{port}}/playlist/playlistname",
+						"url": "{{host}}:{{port}}/playlists/582861cc32641c56414dfd80",
 						"method": "GET",
 						"header": [
 							{
@@ -322,7 +322,7 @@
 						}
 					],
 					"request": {
-						"url": "http://127.0.0.1:3030/tracks",
+						"url": "{{host}}:{{port}}/tracks",
 						"method": "GET",
 						"header": [
 							{
@@ -347,7 +347,7 @@
 				{
 					"name": "Create track 1",
 					"request": {
-						"url": "http://127.0.0.1:3030/tracks",
+						"url": "{{host}}:{{port}}/tracks",
 						"method": "POST",
 						"header": [
 							{
@@ -372,7 +372,7 @@
 				{
 					"name": "Create track 2",
 					"request": {
-						"url": "http://127.0.0.1:3030/tracks",
+						"url": "{{host}}:{{port}}/tracks",
 						"method": "POST",
 						"header": [
 							{
@@ -403,7 +403,7 @@
 				{
 					"name": "Index users",
 					"request": {
-						"url": "http://127.0.0.1:3030/users",
+						"url": "{{host}}:{{port}}/users",
 						"method": "GET",
 						"header": [
 							{
@@ -423,7 +423,7 @@
 				{
 					"name": "Get user",
 					"request": {
-						"url": "http://127.0.0.1:3030/users/57f757ba49983b5c86592bf8",
+						"url": "{{host}}:{{port}}/users/57f757ba49983b5c86592bf8",
 						"method": "GET",
 						"header": [
 							{
@@ -443,7 +443,27 @@
 				{
 					"name": "Find",
 					"request": {
-						"url": "http://127.0.0.1:3030/users?email=super@admin.com",
+						"url": "{{host}}:{{port}}/users?email=alice@user.com",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Find, regex",
+					"request": {
+						"url": "{{host}}:{{port}}/users?email[$search]=alice",
 						"method": "GET",
 						"header": [
 							{
@@ -463,7 +483,7 @@
 				{
 					"name": "Create user",
 					"request": {
-						"url": "http://127.0.0.1:3030/users",
+						"url": "{{host}}:{{port}}/users",
 						"method": "POST",
 						"header": [
 							{
@@ -488,7 +508,7 @@
 				{
 					"name": "Patch user (change email)",
 					"request": {
-						"url": "http://127.0.0.1:3030/users/57f757ba49983b5c86592bf8",
+						"url": "{{host}}:{{port}}/users/57f757ba49983b5c86592bf8",
 						"method": "PATCH",
 						"header": [
 							{
@@ -513,7 +533,7 @@
 				{
 					"name": "Patch user (add friend)",
 					"request": {
-						"url": "http://127.0.0.1:3030/users/57fd501ecb118475e99193f9",
+						"url": "{{host}}:{{port}}/users/57fd501ecb118475e99193f9",
 						"method": "PATCH",
 						"header": [
 							{
@@ -538,7 +558,7 @@
 				{
 					"name": "Patch user (add friend) test2 add test1",
 					"request": {
-						"url": "http://127.0.0.1:3030/users/57fd4ccaaf1437748c268a32",
+						"url": "{{host}}:{{port}}/users/57fd4ccaaf1437748c268a32",
 						"method": "PATCH",
 						"header": [
 							{
@@ -563,7 +583,7 @@
 				{
 					"name": "Create user 2",
 					"request": {
-						"url": "http://127.0.0.1:3030/users",
+						"url": "{{host}}:{{port}}/users",
 						"method": "POST",
 						"header": [
 							{
@@ -588,7 +608,7 @@
 				{
 					"name": "Update user",
 					"request": {
-						"url": "http://127.0.0.1:3030/users",
+						"url": "{{host}}:{{port}}/users",
 						"method": "PUT",
 						"header": [
 							{

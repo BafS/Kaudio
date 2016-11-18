@@ -9,7 +9,8 @@ exports.before = {
   find: [
     auth.verifyToken(),
     auth.populateUser(),
-    auth.restrictToAuthenticated()
+    auth.restrictToAuthenticated(),
+    globalHooks.searchRegex()
   ],
   get: [
     auth.verifyToken(),
