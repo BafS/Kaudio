@@ -32,6 +32,26 @@
 					"response": []
 				},
 				{
+					"name": "Find albums (by title)",
+					"request": {
+						"url": "{{host}}:{{port}}/albums?title[$search]=The",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "Create album",
 					"request": {
 						"url": "{{host}}:{{port}}/albums",
@@ -61,7 +81,134 @@
 		{
 			"name": "Artist",
 			"description": "",
-			"item": []
+			"item": [
+				{
+					"name": "Index artists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var tracks = jsonData.data",
+									"",
+									"if (tracks[0]) {",
+									"    postman.setGlobalVariable(\"track_1\", tracks[0]._id);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{host}}:{{port}}/artists",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json; charset=utf-8",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"The Way You Look Tonight (alt take)\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Find artists (by year)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var tracks = jsonData.data",
+									"",
+									"if (tracks[0]) {",
+									"    postman.setGlobalVariable(\"track_1\", tracks[0]._id);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{host}}:{{port}}/artists?year[$gt]=2000",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json; charset=utf-8",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"The Way You Look Tonight (alt take)\"\n}\n"
+						},
+						"description": "Find artist by year, greater than 2000"
+					},
+					"response": []
+				},
+				{
+					"name": "Find artists (by name)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var tracks = jsonData.data",
+									"",
+									"if (tracks[0]) {",
+									"    postman.setGlobalVariable(\"track_1\", tracks[0]._id);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{host}}:{{port}}/artists?name[$search]=Bono",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json; charset=utf-8",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"The Way You Look Tonight (alt take)\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Authentication",
@@ -323,6 +470,90 @@
 					],
 					"request": {
 						"url": "{{host}}:{{port}}/tracks",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json; charset=utf-8",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"The Way You Look Tonight (alt take)\"\n}\n"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Read track",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var tracks = jsonData.data",
+									"",
+									"if (tracks[0]) {",
+									"    postman.setGlobalVariable(\"track_1\", tracks[0]._id);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{host}}:{{port}}/tracks/582a1de4d9638008daa8d980",
+						"method": "GET",
+						"header": [
+							{
+								"key": "authorization",
+								"value": "{{token}}",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json; charset=utf-8",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"The Way You Look Tonight (alt take)\"\n}\n"
+						},
+						"description": "Read a track by id"
+					},
+					"response": []
+				},
+				{
+					"name": "Find track",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"var tracks = jsonData.data",
+									"",
+									"if (tracks[0]) {",
+									"    postman.setGlobalVariable(\"track_1\", tracks[0]._id);",
+									"}",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{host}}:{{port}}/tracks?title[$search]=Ba",
 						"method": "GET",
 						"header": [
 							{
