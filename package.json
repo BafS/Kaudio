@@ -33,11 +33,11 @@
     "feathers-errors": "^2.4.0",
     "feathers-hooks": "^1.5.8",
     "feathers-hooks-common": "^2.0.1",
-    "feathers-mongoose": "^3.5.3",
+    "feathers-mongoose": "^3.6.1",
     "feathers-rest": "^1.5.0",
     "feathers-socketio": "^1.4.1",
     "gridfs-stream": "^1.1.1",
-    "mongoose": "^4.6.3",
+    "mongoose": "^4.6.8",
     "mongoose-idexists": "^1.0.5",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
@@ -46,7 +46,7 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "eslint": "^3.7.1",
+    "eslint": "^3.10.2",
     "eslint-config-standard": "^6.2.0",
     "eslint-plugin-promise": "^3.0.0",
     "eslint-plugin-standard": "^2.0.1",

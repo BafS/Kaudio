@@ -8,7 +8,8 @@ exports.before = {
   all: [
     auth.verifyToken(),
     auth.populateUser(),
-    auth.restrictToAuthenticated()
+    auth.restrictToAuthenticated(),
+    globalHooks.searchRegex()
   ],
   find: [],
   get: [],
@@ -44,5 +45,3 @@ exports.after = {
   patch: [],
   remove: []
 }
-
-
