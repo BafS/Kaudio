@@ -4,6 +4,7 @@ const hooks = require('./hooks')
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
 const streamToPromise = require('stream-to-promise')
+const stream = require('stream')
 Grid.mongo = mongoose.mongo
 
 class Service {
@@ -25,8 +26,27 @@ class Service {
   }
 
   create(data, params) {
+    /*if (Array.isArray(data)) {
+      return Promise.all(data.map(current => this.create(current)))
+    }
+
+    let gfs = Grid(mongoose.connection.db)
+    let writestream = gfs.createWriteStream({
+      filename: 'plop.txt'
+    })
+    let s = new stream.Readable()
+    s.push('hello')
+    s.push(null)
+    s.pipe(writestream)
+
+    let readstream = gfs.createReadStream({
+      filename: 'plop.txt'
+    })
+
+    return Promise.resolve(streamToPromise(readstream))*/
+
     if (Array.isArray(data)) {
-      return Promise.all(data.map(current => this.create(current)));
+      return Promise.all(data.map(current => this.create(current)))
     }
 
     return Promise.resolve(data)
