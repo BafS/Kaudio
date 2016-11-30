@@ -11,6 +11,8 @@ const playlistSchema = new Schema({
   name: { type: String, required: true, trim: true },
   public: { type: Boolean, required: true },
 
+  description: String,
+
   user_ref: {
     type: ObjectId,
     ref: 'user'
