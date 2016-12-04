@@ -14,6 +14,23 @@
 //   }
 // }
 
+const MongoClient = require('mongodb').MongoClient
+const ObjectId = require('mongodb').ObjectID
+const errors = require('feathers-errors')
+const feathers = require('feathers')
+const configuration = require('feathers-configuration')
+const app = feathers().configure(configuration(__dirname))
+
+const connection = new Promise((resolve, reject) => {
+  MongoClient.connect(app.get('mongodb'), function (err, db) {
+    if (err) {
+      return reject(err)
+    }
+
+    resolve(db)
+  })
+})
+
 const defaults = {}
 
 // Possibility to perform a search on the given field
@@ -54,5 +71,45 @@ exports.checkYear = function (options) {
         ]
       })
     }
+  }
+}
+
+exports.checkIfExists = function (options) {
+  return function (hook) {
+    let extensions = app.get(options)
+
+    return connection.then(db => {
+      const audioCollection = db.collection('fs.files')
+
+      let splitPath = hook.params.path.split('/')
+      let objIdPos = (splitPath.indexOf('audios') + 1)
+
+      let objId = new ObjectId(splitPath[objIdPos])
+      return audioCollection.count({ _id: objId }).then(res => {
+        if (res == 0) {
+          throw new errors.BadRequest('Yikes! This file doesn\'t seem to exist...')
+        }
+
+        return new Promise((resolve, reject) => {
+          audioCollection.find({ _id: objId }).toArray(function (err, docs) {
+            if (err) {
+              return reject(err)
+            }
+
+            let filename = docs[0].filename
+            let splitFilename = filename.split('.')
+            let fileExtension = splitFilename[splitFilename.length - 1]
+
+            for (let i = 0; i < extensions.length; i++) {
+              if (extensions[i] == fileExtension) {
+                resolve(hook)
+              }
+            }
+
+            return reject(new errors.BadRequest('Yikes! This file doesn\'t seem to have the right extension...'))
+          })
+        })
+      })
+    })
   }
 }
