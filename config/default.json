@@ -15,5 +15,7 @@
         "scope": ["public_profile", "email"]
       }
     }
-  }
+  },
+  "audioExtensions": ["mp3", "ogg"],
+  "pictureExtensions": ["jpg", "png"]
 }

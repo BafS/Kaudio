@@ -11,7 +11,7 @@ exports.before = {
     auth.restrictToAuthenticated()
   ],
   find: [],
-  get: [],
+  get: [globalHooks.checkIfExists('audioExtensions')],
   create: [],
   update: [],
   patch: [],

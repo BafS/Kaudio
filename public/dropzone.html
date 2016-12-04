@@ -23,6 +23,13 @@
                 // alert('Received file created event!', file);
             });
 
+            const msg = app.service('mesaages');
+
+            // Now with Real-Time Support!
+            msg.on('created', function(file){
+                alert('Received MESSAGE created event!', file);
+            });
+
 
             // Let's use DropZone!
             Dropzone.options.myAwesomeDropzone = {
