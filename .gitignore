@@ -28,3 +28,5 @@ lib/
 data/
 music/
 uploads
+
+npm-debug.*

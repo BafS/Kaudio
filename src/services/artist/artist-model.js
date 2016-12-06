@@ -13,10 +13,10 @@ const artistSchema = new Schema({
   origin: String, // City, State, Country
 
   // published by the artist
-  albums_ref: {
+  albums_ref: [{
     type: ObjectId,
     ref: 'album'
-  },
+  }],
 
   // "Appears On" albums, e.g. compilations
   aOAlbums_ref: [{
