@@ -21,7 +21,7 @@ const feathers = require('feathers')
 const configuration = require('feathers-configuration')
 const app = feathers().configure(configuration(__dirname))
 
-const connection = new Promise((resolve, reject) => {
+exports.connection = new Promise((resolve, reject) => {
   MongoClient.connect(app.get('mongodb'), function (err, db) {
     if (err) {
       return reject(err)
@@ -78,7 +78,7 @@ exports.checkIfExists = function (options) {
   return function (hook) {
     let extensions = app.get(options)
 
-    return connection.then(db => {
+    return exports.connection.then(db => {
       const audioCollection = db.collection('fs.files')
 
       let splitPath = hook.params.path.split('/')
@@ -102,7 +102,7 @@ exports.checkIfExists = function (options) {
 
             for (let i = 0; i < extensions.length; i++) {
               if (extensions[i] == fileExtension) {
-                resolve(hook)
+                return resolve(hook)
               }
             }
 

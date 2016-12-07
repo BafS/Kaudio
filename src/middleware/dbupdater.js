@@ -3,25 +3,14 @@
 const hooks = require('feathers-hooks-common')
 const path = require('path')
 const appDir = path.dirname(require.main.filename)
-const MongoClient = require('mongodb').MongoClient
 const storagePath = appDir + '/../uploads'
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
 const fs = require('fs')
 const dauria = require('dauria')
 const musicmetadata = require('musicmetadata')
-const feathers = require('feathers')
-const configuration = require('feathers-configuration')
-const app = feathers().configure(configuration(__dirname))
+const globalHooks = require('../hooks')
 
-const connection = new Promise((resolve, reject) => {
-  MongoClient.connect(app.get('mongodb'), function (err, db) {
-    if (err) {
-      return reject(err)
-    }
-    resolve(db)
-  })
-})
 
 /**
  * If object already exists, returns its _id
@@ -29,7 +18,7 @@ const connection = new Promise((resolve, reject) => {
  * and then returns the new _id
  */
 const getDBref = function (app, service, searchObj) {
-  return connection.then(db => {
+  return globalHooks.connection.then(db => {
     const collection = db.collection(service)
     return new Promise((resolve, reject) => {
       collection.findOne(searchObj, function (err, doc) {
@@ -51,7 +40,7 @@ const getDBref = function (app, service, searchObj) {
  *Adds the ObjectId refs in the DB
  */
 const addDBref = function (app, service, objToEdit, field, isArray, referencedObj) {
-  return connection.then(db => {
+  return globalHooks.connection.then(db => {
     const collection = db.collection(service)
     return new Promise((resolve, reject) => {
       collection.findOne({ _id: objToEdit._id }, function (err, doc) {

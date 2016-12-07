@@ -3,6 +3,35 @@
 const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
+const errors = require('feathers-errors')
+const ObjectId = require('mongodb').ObjectID
+
+const checkPublic = function (options) {
+  return function (hook) {
+    return globalHooks.connection.then(db => {
+      const collection = db.collection('playlists')
+
+      let objId = ObjectId(hook.id)
+      return new Promise((resolve, reject) => {
+        collection.findOne({ _id: objId }, function (err, doc) {
+          if (err) {
+            return reject(err)
+          }
+
+          if (!doc) {
+            return reject(new errors.NotFound('Playlist does not exist'))
+          }
+
+          if (!doc.public) {
+            return reject(new errors.BadRequest('This playlist is not public!'))
+          }
+
+          return resolve(hook)
+        })
+      })
+    })
+  }
+}
 
 exports.before = {
   all: [
@@ -11,7 +40,7 @@ exports.before = {
     auth.restrictToAuthenticated()
   ],
   find: [],
-  get: [],
+  get: [checkPublic()],
   create: [],
   update: [
     globalHooks.updateDate()
