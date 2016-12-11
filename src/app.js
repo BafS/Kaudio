@@ -18,6 +18,19 @@ const app = feathers()
 
 app.configure(configuration(path.join(__dirname, '..')))
 
+/**
+ * Formats response. Do not remove!
+ * Allows to send 'audio/mpeg' content on
+ * /audios enpoint as audio and not JSON
+ */
+function restFormatter (req, res) {
+  res.format({
+    'default': function () {
+      res.send(res.data)
+    }
+  })
+}
+
 app.use(compress())
   .options('*', cors())
   .use(cors())
@@ -27,7 +40,8 @@ app.use(compress())
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }))
   .configure(hooks())
-  .configure(rest())
+  // .configure(rest())
+  .configure(rest(restFormatter))
   .configure(socketio())
   .configure(services)
   .configure(middleware)
