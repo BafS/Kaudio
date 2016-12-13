@@ -26,7 +26,7 @@ class Service {
   }
 
   create(data, params) {
-    if(Array.isArray(data)) {
+    if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current)))
     }
 
@@ -46,11 +46,17 @@ class Service {
   }
 }
 
-module.exports = function(){
+module.exports = function () {
   const app = this
 
   // Initialize our service with any options it requires
-  app.use('/pictures', new Service())
+  app.use('/pictures',
+    function (req, res, next) {
+      req.feathers.path = req.path
+      req.feathers.service = 'pictures'
+      next()
+    },
+    new Service())
 
   // Get our initialize service to that we can bind hooks
   const pictureService = app.service('/pictures')

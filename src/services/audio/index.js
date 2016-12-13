@@ -11,11 +11,11 @@ class Service {
     this.options = options || {}
   }
 
-  find(params) {
+  find (params) {
     return Promise.resolve([])
   }
 
-  get(id, params) {
+  get (id, params) {
     let gfs = Grid(mongoose.connection.db)
     let readstream = gfs.createReadStream({
       _id: id
@@ -52,6 +52,7 @@ module.exports = function () {
   app.use('/audios',
     function (req, res, next) {
       req.feathers.path = req.path
+      req.feathers.service = 'audios'
       next()
     },
     new Service())

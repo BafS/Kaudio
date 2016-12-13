@@ -82,7 +82,7 @@ exports.checkIfExists = function (options) {
       const audioCollection = db.collection('fs.files')
 
       let splitPath = hook.params.path.split('/')
-      let objIdPos = (splitPath.indexOf('audios') + 1)
+      let objIdPos = (splitPath.indexOf(hook.params.service) + 1)
 
       let objId = new ObjectId(splitPath[objIdPos])
       return audioCollection.count({ _id: objId }).then(res => {

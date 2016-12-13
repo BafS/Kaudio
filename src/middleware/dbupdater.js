@@ -12,6 +12,8 @@ const musicmetadata = require('musicmetadata')
 const globalHooks = require('../hooks')
 const errors = require('feathers-errors')
 const ObjectId = require('mongodb').ObjectID
+const jwt = require('jsonwebtoken')
+const auth = require('feathers-authentication').hooks
 
 
 /**
@@ -102,7 +104,10 @@ const checkOneTrack = function (metadata) {
   }
 }
 
-const checkNotExisting = function (filePath, app) {
+/**
+ * Checks if this audio track already exists in DB
+ */
+const checkAudioNotExisting = function (filePath, app) {
   return globalHooks.connection.then(db => {
     const collection = db.collection('tracks')
     return new Promise((resolve, reject) => {
@@ -132,9 +137,9 @@ const checkNotExisting = function (filePath, app) {
           Promise.all(promise).then(values => {
             return resolve()
           })
-          .catch(err => {
-            return reject(err)
-          })
+            .catch(err => {
+              return reject(err)
+            })
         })
       })
     })
@@ -142,7 +147,95 @@ const checkNotExisting = function (filePath, app) {
 }
 
 /**
- * Pipes the song to DB and adds references for later searching
+ * Adds track, artist, albums references in DB
+ */
+const addAudioRefs = function (filePath, app, writestream, gfs, fileId) {
+  return function (res) {
+    musicmetadata(gfs.createReadStream({ _id: fileId }), function (err, metadata) {
+      if (err) {
+        throw err
+      }
+
+      let artist, album, track
+
+      getDBref(app, 'artists', { name: metadata.artist[0] })
+        .then(function (res) {
+          artist = res
+          return getDBref(app, 'albums', { title: metadata.album, artist_ref: artist._id })
+        })
+        .then(function (res) {
+          album = res
+          return getDBref(app, 'tracks', { title: metadata.title, album_ref: album._id })
+        })
+        .then(function (res) {
+          track = res
+          return addDBref(app, 'artists', artist, 'albums_ref', true, album)
+        })
+        .then(function (res) {
+          return addDBref(app, 'albums', album, 'artist_ref', false, artist)
+        })
+        .then(function (res) {
+          return addDBref(app, 'albums', album, 'tracks_ref', true, track)
+        })
+        .then(function (res) {
+          return addDBref(app, 'tracks', track, 'album_ref', false, album)
+        })
+        .then(function (res) {
+          let fileObj = {}
+          fileObj._id = fileId
+          return addDBref(app, 'tracks', track, 'file', false, fileObj)
+        })
+        .then(function (res) {
+          return Promise.resolve(res)
+        })
+        .catch(function (err) {
+          console.log(err)
+        })
+    })
+    // })
+  }
+}
+
+/**
+ * Add new user image references and delete old ones if needed
+ */
+const replaceUserImage = function (filePath, app, fileId, token) {
+  return globalHooks.connection.then(db => {
+    const userCollection = db.collection('users')
+    const fileCollections = db.collection('fs.files')
+
+    return new Promise((resolve, reject) => {
+      let id = ObjectId(jwt.verify(token, app.get('auth').token.secret)._id)
+
+      return userCollection.findOne({ _id: id }, function (err, doc) {
+        if (err) {
+          return reject(err)
+        }
+
+        if (doc === null) {
+          return reject(new errors.BadRequest('This token does not belong to any known user'))
+        }
+
+        if (doc.picture !== undefined) {
+          let pictureId = ObjectId(doc.picture)
+
+          // delete the old picture
+          return fileCollections.remove({ _id: pictureId }, function (err1) {
+            if (err1) {
+              return reject(err1)
+            }
+            return addDBref(app, 'users', doc, 'picture', false, { _id: fileId })
+          })
+        }
+        return addDBref(app, 'users', doc, 'picture', false, { _id: fileId })
+      })
+    })
+  })
+}
+
+/**
+ * Pipes the file to DB and adds references depending
+ * on the file type (picture or audio)
  */
 const pipeToDB = function (app) {
   return function (hook) {
@@ -160,107 +253,43 @@ const pipeToDB = function (app) {
 
     let filePath = storagePath + '/' + hook.result.id
 
-    checkNotExisting(filePath, app)
-      .then(function (res) {
-        fs.createReadStream(filePath).pipe(writestream)
+    fs.createReadStream(filePath).pipe(writestream)
 
-        // Once file is written to DB, add all the ObjectId references
-        writestream.on('close', function (file) {
-          musicmetadata(gfs.createReadStream({ _id: fileId }), function (err, metadata) {
-            if (err) {
-              throw err
-            }
+    writestream.on('close', function (file) {
+      // delete the file from FS (it is now in DB)
+      fs.unlinkSync(filePath)
 
-            let artist, album, track
-
-            getDBref(app, 'artists', { name: metadata.artist[0] })
-              .then(function (res) {
-                artist = res
-                return getDBref(app, 'albums', { title: metadata.album, artist_ref: artist._id })
-              })
-              .then(function (res) {
-                album = res
-                return getDBref(app, 'tracks', { title: metadata.title, album_ref: album._id })
-              })
-              .then(function (res) {
-                track = res
-                return addDBref(app, 'artists', artist, 'albums_ref', true, album)
-              })
-              .then(function (res) {
-                return addDBref(app, 'albums', album, 'artist_ref', false, artist)
-              })
-              .then(function (res) {
-                return addDBref(app, 'albums', album, 'tracks_ref', true, track)
-              })
-              .then(function (res) {
-                return addDBref(app, 'tracks', track, 'album_ref', false, album)
-              })
-              .then(function (res) {
-                let fileObj = {}
-                fileObj._id = fileId
-                return addDBref(app, 'tracks', track, 'file', false, fileObj)
-              })
-              .then(function (res) {
-                fs.unlinkSync(filePath)
-                return Promise.resolve(res)
-              })
-              .catch(function (err) {
-                console.log(err)
-              })
-          })
-        })
-      })
-      .catch(function (err) {
-        console.log(err)
-        fs.unlinkSync(filePath)
-      })
+      switch (hook.params.file.mimetype.split(('/'))[0]) {
+        case 'audio':
+          checkAudioNotExisting(filePath, app)
+            .then(addAudioRefs(filePath, app, writestream, gfs, fileId))
+            .catch(function (err) {
+              console.log(err)
+            })
+          break
+        case 'image':
+          replaceUserImage(filePath, app, fileId, hook.params.token)
+            .catch(function (err) {
+              console.log(err)
+            })
+          break
+        default:
+          throw new errors.BadRequest('Unexpected mimetype')
+      }
+    })
   }
 }
 
-/*const checkOneSong = function (options){
-  return function(track){
-    if(track.title)
-  }
-}*/
-
-
-
-
-/*return globalHooks.connection.then(db => {
-  const trackCollection = db.collection('tracks')
-
-  return new Promise((resolve, reject) => {
-    console.log('in promise')
-    trackCollection.find({ name: hook.data.name }).toArray(function (err, docs) {
-      if (err) {
-        return reject(err)
-      }
-
-      // there is no track with this name
-      if (docs.length == 0) {
-        return resolve(hook)
-      }
-
-      let promise = app.service('tracks').get({ _id: docs[0]._id })
-
-      for (let i = 0; i < docs.length; ++i) {
-        promise.then(app.service('tracks').get({ _id: docs[i]._id }))
-      }
-
-    })
-  })
-})*/
-
-
-exports.beforeUpload = function (app) {
+exports.prepareUpload = function (app) {
   return {
     create: [
+      auth.verifyToken(),
       putDataInHook()
     ]
   }
 }
 
-exports.afterUpload = function (app) {
+exports.cleanUpUpload = function (app) {
   return {
     create: [
       hooks.remove('uri'),

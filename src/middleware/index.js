@@ -34,9 +34,9 @@ module.exports = function () {
     blobService({ Model: blobStorage })
   )
 
-  app.service('/uploads').before(dbUpdater.beforeUpload(app))
+  app.service('/uploads').before(dbUpdater.prepareUpload(app))
 
-  app.service('/uploads').after(dbUpdater.afterUpload(app))
+  app.service('/uploads').after(dbUpdater.cleanUpUpload(app))
 
   app.use(notFound())
   app.use(logger(app))
