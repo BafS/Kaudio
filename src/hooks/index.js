@@ -38,6 +38,7 @@ const defaults = {}
 exports.searchRegex = function () {
   return (hook) => {
     const query = hook.params.query
+
     for (let field in query) {
       if (query[field].$search && field.indexOf('$') === -1) {
         query[field] = { $regex: new RegExp(query[field].$search, 'i') }
@@ -81,10 +82,8 @@ exports.checkIfExists = function (options) {
     return exports.connection.then(db => {
       const audioCollection = db.collection('fs.files')
 
-      let splitPath = hook.params.path.split('/')
-      let objIdPos = (splitPath.indexOf(hook.params.service) + 1)
+      let objId = new ObjectId(hook.id)
 
-      let objId = new ObjectId(splitPath[objIdPos])
       return audioCollection.count({ _id: objId }).then(res => {
         if (res == 0) {
           throw new errors.BadRequest('Yikes! This file doesn\'t seem to exist...')
@@ -108,6 +107,26 @@ exports.checkIfExists = function (options) {
 
             return reject(new errors.BadRequest('Yikes! This file doesn\'t seem to have the right extension...'))
           })
+        })
+      })
+    })
+  }
+}
+
+exports.replaceId = function (service, field) {
+  return function (hook) {
+    return exports.connection.then(db => {
+      const collection = db.collection(service)
+      let id = new ObjectId(hook.id)
+      return new Promise((resolve, reject) => {
+        collection.findOne({ _id: id }, function (err, doc) {
+          if (err) {
+            return reject(err)
+          }
+
+          hook.id = doc[field]
+
+          return resolve(hook)
         })
       })
     })

@@ -11,7 +11,10 @@ exports.before = {
     auth.restrictToAuthenticated()
   ],
   find: [],
-  get: [globalHooks.checkIfExists('pictureExtensions')],
+  get: [
+    globalHooks.replaceId('users', 'picture'),
+    globalHooks.checkIfExists('pictureExtensions')
+  ],
   create: [],
   update: [],
   patch: [],
