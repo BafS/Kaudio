@@ -107,7 +107,7 @@ const checkOneTrack = function (metadata) {
 /**
  * Checks if this audio track already exists in DB
  */
-const checkAudioNotExisting = function (filePath, app) {
+const checkAudioNotExisting = function (filePath, app, fileId) {
   return globalHooks.connection.then(db => {
     const collection = db.collection('tracks')
     return new Promise((resolve, reject) => {
@@ -138,7 +138,13 @@ const checkAudioNotExisting = function (filePath, app) {
             return resolve()
           })
             .catch(err => {
-              return reject(err)
+              let id = new ObjectId(fileId)
+              return db.collection('fs.files').remove({ _id: id }, function (err1) {
+                if (err1) {
+                  return reject(err1)
+                }
+                return reject(err)
+              })
             })
         })
       })
@@ -242,6 +248,7 @@ const pipeToDB = function (app) {
     // generate new _id
     let fileId = mongoose.Types.ObjectId()
 
+    // TODO set proper _id
     // set _id in response
     hook.result._id = fileId
 
@@ -256,10 +263,9 @@ const pipeToDB = function (app) {
     fs.createReadStream(filePath).pipe(writestream)
 
     writestream.on('close', function (file) {
-
       switch (hook.params.file.mimetype.split(('/'))[0]) {
         case 'audio':
-          checkAudioNotExisting(filePath, app)
+          checkAudioNotExisting(filePath, app, fileId)
             .then(addAudioRefs(filePath, app, writestream, gfs, fileId))
             .then(function (res) {
               // delete the file from FS (it is now in DB)
