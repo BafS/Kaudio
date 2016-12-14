@@ -256,24 +256,34 @@ const pipeToDB = function (app) {
     fs.createReadStream(filePath).pipe(writestream)
 
     writestream.on('close', function (file) {
-      // delete the file from FS (it is now in DB)
-      fs.unlinkSync(filePath)
 
       switch (hook.params.file.mimetype.split(('/'))[0]) {
         case 'audio':
           checkAudioNotExisting(filePath, app)
             .then(addAudioRefs(filePath, app, writestream, gfs, fileId))
+            .then(function (res) {
+              // delete the file from FS (it is now in DB)
+              fs.unlinkSync(filePath)
+              return res
+            })
             .catch(function (err) {
               console.log(err)
             })
           break
         case 'image':
           replaceUserImage(filePath, app, fileId, hook.params.token)
+            .then(function (res) {
+              // delete the file from FS (it is now in DB)
+              fs.unlinkSync(filePath)
+              return res
+            })
             .catch(function (err) {
               console.log(err)
             })
           break
         default:
+          // delete the file from FS (it is now in DB)
+          fs.unlinkSync(filePath)
           throw new errors.BadRequest('Unexpected mimetype')
       }
     })
