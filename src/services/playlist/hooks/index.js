@@ -101,7 +101,8 @@ exports.after = {
       'user_ref',
       'tracks_ref',
       'createdAt',
-      'updatedAt')
+      'updatedAt',
+      'user.friends_ref')
   ],
   create: [],
   update: [],
