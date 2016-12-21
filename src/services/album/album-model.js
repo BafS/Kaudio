@@ -24,6 +24,9 @@ const albumSchema = new Schema({
     ref: 'track'
   }],
 
+  artist: Object,
+  tracks: Object,
+
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }
 })

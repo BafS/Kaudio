@@ -1,4 +1,5 @@
 'use strict'
+const search = require('./search')
 const picture = require('./picture')
 const audio = require('./audio')
 const playlist = require('./playlist')
@@ -35,4 +36,5 @@ module.exports = function () {
   app.configure(playlist)
   app.configure(audio)
   app.configure(picture)
+  app.configure(search)
 }

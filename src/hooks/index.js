@@ -132,3 +132,9 @@ exports.replaceId = function (service, field) {
     })
   }
 }
+
+exports.isEmpty = function (field) {
+  return function (hook) {
+    return hook.result[field].length === 0
+  }
+}

@@ -4,12 +4,38 @@ const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
+const includeSchema = {
+  include: [
+    {
+      service: 'albums',
+      nameAs: 'album',
+      parentField: 'album_ref',
+      childField: '_id',
+      query: {
+        $select: ['_id', 'title', 'artist_ref']
+      },
+      include: [
+        {
+          service: 'artists',
+          nameAs: 'artist',
+          parentField: 'artist_ref',
+          childField: '_id',
+          query: {
+            $select: ['_id', 'name']
+          }
+        }
+      ]
+    }
+  ]
+}
+
 exports.before = {
   all: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    globalHooks.searchRegex()
+    globalHooks.searchRegex(),
+    hooks.removeQuery('album')
   ],
   find: [],
   get: [],
@@ -27,32 +53,24 @@ exports.after = {
   all: [],
   find: [],
   get: [
-    hooks.populate('album', {
-      service: 'albums',
-      field: 'album_ref'
-    }),
-    hooks.populate('aOAlbums', {
-      service: 'albums',
-      field: 'aOAlbums_ref'
-    }),
+    hooks.populate({ schema: includeSchema }),
     hooks.remove(
       'updatedAt',
       'createdAt',
       '__v',
       'album_ref',
-      'album.tracks_ref',
-      'album.year',
-      'album.artist.persons_ref',
-      'album.artist.aOAlbums_ref',
-      'album.artist.origin',
-      'album.artist.year',
-      'aOAlbums_ref',
-      'aOAlbums.tracks_ref',
-      'aOAlbums.year',
-      'aOAlbums.artist.persons_ref',
-      'aOAlbums.artist.aOAlbums_ref',
-      'aOAlbums.artist.origin',
-      'aOAlbums.artist.year')
+      'aOAlbums_ref'),
+
+    //pluck is used due to errors with remove function on subdocuments
+    hooks.pluck(
+      'album.artist',
+      'album._id',
+      'album.title',
+      '_id',
+      'title',
+      'file'
+      ),
+    hooks.iff(globalHooks.isEmpty('album'), hooks.remove('album'))
   ],
   create: [],
   update: [],

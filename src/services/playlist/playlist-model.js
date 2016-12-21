@@ -23,6 +23,9 @@ const playlistSchema = new Schema({
     ref: 'track'
   }],
 
+  user: Object,
+  tracks: Object,
+
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }
 })

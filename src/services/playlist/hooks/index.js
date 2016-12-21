@@ -66,11 +66,36 @@ const checkNotExisting = function (options) {
   }
 }
 
+const includeSchema = {
+  include: [
+    {
+      service: 'users',
+      nameAs: 'user',
+      parentField: 'user_ref',
+      childField: '_id',
+      query: {
+        $select: ['_id', 'email']
+      }
+    },
+    {
+      service: 'tracks',
+      nameAs: 'tracks',
+      parentField: 'tracks_ref',
+      childField: '_id',
+      query: {
+        $select: ['_id', 'title']
+      },
+      asArray: true
+    }
+  ]
+}
+
 exports.before = {
   all: [
     auth.verifyToken(),
     auth.populateUser(),
-    auth.restrictToAuthenticated()
+    auth.restrictToAuthenticated(),
+    hooks.removeQuery('user', 'tracks')
   ],
   find: [],
   get: [restrictPrivate()],
@@ -88,21 +113,15 @@ exports.after = {
   all: [],
   find: [],
   get: [
-    hooks.populate('user', {
-      service: 'users',
-      field: 'user_ref'
-    }),
-    hooks.populate('tracks', {
-      service: 'tracks',
-      field: 'tracks_ref'
-    }),
+    hooks.populate({ schema: includeSchema }),
     hooks.remove(
       '__v',
       'user_ref',
       'tracks_ref',
       'createdAt',
-      'updatedAt',
-      'user.friends_ref')
+      'updatedAt'),
+    hooks.iff(globalHooks.isEmpty('user'), hooks.remove('user')),
+    hooks.iff(globalHooks.isEmpty('tracks'), hooks.remove('tracks'))
   ],
   create: [],
   update: [],

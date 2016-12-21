@@ -4,13 +4,29 @@ const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
+const includeSchema = {
+  include: [
+    {
+      service: 'users',
+      nameAs: 'friends',
+      parentField: 'friends_ref',
+      childField: '_id',
+      query: {
+        $select: ['_id', 'email', 'name']
+      },
+      asArray: true
+    }
+  ]
+}
+
 exports.before = {
   all: [],
   find: [
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
-    globalHooks.searchRegex()
+    globalHooks.searchRegex(),
+    hooks.removeQuery('friends')
   ],
   get: [
     auth.verifyToken(),
@@ -47,7 +63,13 @@ exports.after = {
   all: [hooks.remove('password')],
   find: [],
   get: [
-    hooks.remove('__v', 'updatedAt', 'createdAt')
+    hooks.populate({ schema: includeSchema }),
+    hooks.remove(
+      '__v',
+      'updatedAt',
+      'createdAt',
+      'friends_ref'),
+    hooks.iff(globalHooks.isEmpty('friends'), hooks.remove('friends'))
   ],
   create: [],
   update: [],

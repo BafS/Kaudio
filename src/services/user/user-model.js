@@ -21,6 +21,8 @@ const userSchema = new Schema({
     ref: 'user'
   }],
 
+  friends: Object,
+
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }
 })

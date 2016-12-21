@@ -29,6 +29,10 @@ const artistSchema = new Schema({
     ref: 'person'
   }],
 
+  albums: Object,
+  aOAlbums: Object,
+  persons: Object,
+
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }
 })

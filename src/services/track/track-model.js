@@ -30,6 +30,9 @@ const trackSchema = new Schema({
     }
   }],
 
+  album: Object,
+  artist: Object,
+
   file: ObjectId, // Link to GridFS
 
   createdAt: { type: Date, 'default': Date.now },
