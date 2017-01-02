@@ -38,6 +38,7 @@ exports.before = {
     auth.hashPassword()
   ],
   update: [
+    auth.hashPassword(),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -45,6 +46,7 @@ exports.before = {
     globalHooks.updateDate()
   ],
   patch: [
+    auth.hashPassword(),
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
@@ -67,7 +69,6 @@ exports.after = {
     hooks.remove(
       '__v',
       'updatedAt',
-      'createdAt',
       'friends_ref'),
     hooks.iff(globalHooks.isEmpty('friends'), hooks.remove('friends'))
   ],
