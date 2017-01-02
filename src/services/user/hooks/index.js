@@ -34,6 +34,9 @@ const keepPassword = function (app) {
           throw err
         })
     }
+    else {
+      next() 
+    }
   }
 }
 
