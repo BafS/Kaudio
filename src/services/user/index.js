@@ -22,8 +22,8 @@ module.exports = function () {
   const userService = app.service('/users')
 
   // Set up our before hooks
-  userService.before(hooks.before)
+  userService.before(hooks.before(app))
 
   // Set up our after hooks
-  userService.after(hooks.after)
+  userService.after(hooks.after(app))
 }
