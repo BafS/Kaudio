@@ -85,8 +85,8 @@ exports.checkIfExists = function (options) {
       let objId = new ObjectId(hook.id)
 
       return audioCollection.count({ _id: objId }).then(res => {
-        if (res == 0) {
-          throw new errors.BadRequest('Yikes! This file doesn\'t seem to exist...')
+        if (res === 0) {
+          return Promise.reject(new errors.BadRequest('Yikes! This file doesn\'t seem to exist...'))
         }
 
         return new Promise((resolve, reject) => {
@@ -122,6 +122,10 @@ exports.replaceId = function (service, field) {
         collection.findOne({ _id: id }, function (err, doc) {
           if (err) {
             return reject(err)
+          }
+
+          if (doc === null) {
+            return reject(new errors.BadRequest('Yikes! This file doesn\'t seem to exist...'))
           }
 
           hook.id = doc[field]
