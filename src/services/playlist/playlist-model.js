@@ -24,7 +24,18 @@ const playlistSchema = new Schema({
   }],
 
   user: Object,
-  tracks: Object,
+  tracks: [{
+    _id: ObjectId,
+    title: String,
+    album: {
+      _id: ObjectId,
+      title: String,
+      artist: {
+        _id: ObjectId,
+        name: String
+      }
+    }
+  }],
 
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }

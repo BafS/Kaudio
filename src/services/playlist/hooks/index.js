@@ -90,9 +90,31 @@ const includeSchema = {
       parentField: 'tracks_ref',
       childField: '_id',
       query: {
-        $select: ['_id', 'title']
+        $select: ['_id', 'title', 'album_ref']
       },
-      asArray: true
+      asArray: true,
+      include: [
+        {
+          service: 'albums',
+          nameAs: 'album',
+          parentField: 'album_ref',
+          childField: '_id',
+          query: {
+            $select: ['_id', 'title', 'artist_ref']
+          },
+          include: [
+            {
+              service: 'artists',
+              nameAs: 'artist',
+              parentField: 'artist_ref',
+              childField: '_id',
+              query: {
+                $select: ['_id', 'name']
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }
@@ -119,7 +141,15 @@ exports.before = {
 
 exports.after = {
   all: [],
-  find: [],
+  find: [
+    hooks.populate({ schema: includeSchema }),
+    hooks.remove(
+      '__v',
+      'user_ref',
+      'tracks_ref',
+      'createdAt',
+      'updatedAt')
+  ],
   get: [
     hooks.populate({ schema: includeSchema }),
     hooks.remove(
