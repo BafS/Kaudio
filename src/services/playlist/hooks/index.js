@@ -102,6 +102,7 @@ exports.before = {
     auth.verifyToken(),
     auth.populateUser(),
     auth.restrictToAuthenticated(),
+    globalHooks.searchRegex(),
     hooks.removeQuery('user', 'tracks')
   ],
   find: [excludePrivate()],
