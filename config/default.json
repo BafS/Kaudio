@@ -10,7 +10,7 @@
     "local": {},
     "facebook": {
       "clientID": "1905242289706539",
-      "clientSecret": "your facebook client secret",
+      "clientSecret": "9f4d44c3cd3c413ba54b66d1b8656727",
       "permissions": {
         "scope": ["public_profile", "email"]
       }
