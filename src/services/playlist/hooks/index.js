@@ -66,6 +66,13 @@ const checkNotExisting = function (options) {
   }
 }
 
+const excludePrivate = function (options) {
+  return function (hook) {
+    hook.params.query.public = true
+    return hook
+  }
+}
+
 const includeSchema = {
   include: [
     {
@@ -97,7 +104,7 @@ exports.before = {
     auth.restrictToAuthenticated(),
     hooks.removeQuery('user', 'tracks')
   ],
-  find: [],
+  find: [excludePrivate()],
   get: [restrictPrivate()],
   create: [checkNotExisting()],
   update: [
