@@ -14,6 +14,9 @@ const userSchema = new Schema({
   email: { type: String, required: true, unique: true }, // require
   password: { type: String, required: true }, // require
   name: String,
+  age: Number,
+  country: String,
+  city: String,
   picture: ObjectId, // Link to GridFS
 
   friends_ref: [{
