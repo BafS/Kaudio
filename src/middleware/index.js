@@ -3,7 +3,7 @@
 const handler = require('feathers-errors/handler')
 const notFound = require('./not-found-handler')
 const logger = require('./logger')
-const dbUpdater = require('./dbupdater')
+const uploads = require('./uploads')
 const multer = require('multer')
 const multipartMiddleware = multer()
 const blobService = require('feathers-blob')
@@ -34,9 +34,17 @@ module.exports = function () {
     blobService({ Model: blobStorage })
   )
 
-  app.service('/uploads').before(dbUpdater.prepareUpload(app))
+  app.service('/uploads').before(uploads.prepareUpload(app))
+  app.service('/uploads').after(uploads.cleanUpUpload(app))
 
-  app.service('/uploads').after(dbUpdater.cleanUpUpload(app))
+  app.use('/localuploads', {
+    create (data, params) {
+      return Promise.resolve({ added: data.filesOk, failed: data.filesFailed })
+    }
+  })
+
+  app.service('/localuploads').before(uploads.prepareLocalUpload(app))
+  app.service('/localuploads').after(uploads.cleanUpLocalUpload(app))
 
   app.use(notFound())
   app.use(logger(app))

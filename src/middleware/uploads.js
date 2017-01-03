@@ -15,7 +15,6 @@ const ObjectId = require('mongodb').ObjectID
 const jwt = require('jsonwebtoken')
 const auth = require('feathers-authentication').hooks
 
-
 /**
  * If object already exists, returns its _id
  * Otherwise, it creates the object with the appropriate service
@@ -155,7 +154,7 @@ const checkAudioNotExisting = function (filePath, app, fileId) {
 /**
  * Adds track, artist, albums references in DB
  */
-const addAudioRefs = function (filePath, app, writestream, gfs, fileId) {
+const addAudioRefs = function (app, gfs, fileId) {
   return function (res) {
     musicmetadata(gfs.createReadStream({ _id: fileId }), function (err, metadata) {
       if (err) {
@@ -198,7 +197,6 @@ const addAudioRefs = function (filePath, app, writestream, gfs, fileId) {
           console.log(err)
         })
     })
-    // })
   }
 }
 
@@ -260,13 +258,15 @@ const pipeToDB = function (app) {
 
     let filePath = storagePath + '/' + hook.result.id
 
+    console.log(filePath)
+
     fs.createReadStream(filePath).pipe(writestream)
 
     writestream.on('close', function (file) {
       switch (hook.params.file.mimetype.split(('/'))[0]) {
         case 'audio':
           checkAudioNotExisting(filePath, app, fileId)
-            .then(addAudioRefs(filePath, app, writestream, gfs, fileId))
+            .then(addAudioRefs(app, gfs, fileId))
             .then(function (res) {
               // delete the file from FS (it is now in DB)
               fs.unlinkSync(filePath)
@@ -296,6 +296,74 @@ const pipeToDB = function (app) {
   }
 }
 
+const pipeLocalFilesToDB = function (app) {
+  return function (hook, next) {
+    let p = hook.data.path
+    hook.data.filesOk = 0
+    hook.data.filesFailed = 0
+    let filesReviewed = 0
+    let fileId, gfs, writestream
+
+    if (p === undefined) {
+      throw new errors.BadRequest('You must define a path property!')
+    }
+
+    if (!fs.existsSync(p)) {
+      throw new errors.BadRequest('Path is not accessible!')
+    }
+
+    fs.readdir(p, function (err, files) {
+      if (err) {
+        throw err
+      }
+
+      let audioExtensions = app.get('audioExtensions')
+
+      let map = files.map(function (filePath) {
+        return path.join(p, filePath)
+      }).filter(function (filePath) {
+        return fs.statSync(filePath).isFile()
+      }).filter(function (filePath) {
+        for (let i = 0; i < audioExtensions.length; ++i) {
+          if (filePath.split('.').pop() === audioExtensions[i]) {
+            return true
+          }
+        }
+        return false
+      })
+
+      map.forEach(function (filePath) {
+        fileId = new ObjectId()
+        gfs = Grid(mongoose.connection.db)
+        writestream = gfs.createWriteStream({
+          filename: path.basename(filePath),
+          _id: fileId
+        })
+
+        fs.createReadStream(filePath).pipe(writestream)
+
+        writestream.on('close', function (file) {
+          checkAudioNotExisting(filePath, app, file._id)
+            .then(addAudioRefs(app, gfs, file._id))
+            .then(function (res) {
+              hook.data.filesOk++
+              if (++filesReviewed === map.length) {
+                next()
+              }
+            })
+            .catch(function (err) {
+              hook.data.filesFailed++
+              if (++filesReviewed === map.length) {
+                next()
+              }
+              console.log(err)
+            })
+        })
+      })
+    })
+  }
+}
+
 exports.prepareUpload = function (app) {
   return {
     create: [
@@ -313,5 +381,20 @@ exports.cleanUpUpload = function (app) {
       pipeToDB(app),
       hooks.remove('id')
     ]
+  }
+}
+
+exports.prepareLocalUpload = function (app) {
+  return {
+    create: [
+      auth.verifyToken(),
+      pipeLocalFilesToDB(app)
+    ]
+  }
+}
+
+exports.cleanUpLocalUpload = function (app) {
+  return {
+    create: []
   }
 }
