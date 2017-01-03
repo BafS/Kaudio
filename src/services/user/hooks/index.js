@@ -33,9 +33,8 @@ const keepPassword = function (app) {
         .catch(function (err) {
           throw err
         })
-    }
-    else {
-      next() 
+    } else {
+      next()
     }
   }
 }
@@ -53,7 +52,7 @@ exports.before = function (app) {
     get: [
       auth.verifyToken(),
       auth.populateUser(),
-      auth.restrictToAuthenticated(),
+      auth.restrictToAuthenticated()
       // auth.restrictToOwner({ ownerField: '_id' })
     ],
     create: [
@@ -88,7 +87,13 @@ exports.before = function (app) {
 exports.after = function (app) {
   return {
     all: [hooks.remove('password')],
-    find: [],
+    find: [
+      hooks.populate({ schema: includeSchema }),
+      hooks.remove(
+        '__v',
+        'updatedAt',
+        'friends_ref')
+    ],
     get: [
       hooks.populate({ schema: includeSchema }),
       hooks.remove(

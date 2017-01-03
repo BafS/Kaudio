@@ -65,7 +65,17 @@ exports.before = {
 
 exports.after = {
   all: [],
-  find: [],
+  find: [
+    hooks.populate({ schema: includeSchema }),
+    hooks.remove(
+      'updatedAt',
+      'createdAt',
+      '__v',
+      'albums_ref',
+      'aOAlbums_ref',
+      'persons_ref'
+      )
+  ],
   get: [
     hooks.populate({ schema: includeSchema }),
     hooks.remove(

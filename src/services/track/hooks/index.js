@@ -51,7 +51,25 @@ exports.before = {
 
 exports.after = {
   all: [],
-  find: [],
+  find: [
+    hooks.populate({ schema: includeSchema }),
+    hooks.remove(
+      'updatedAt',
+      'createdAt',
+      '__v',
+      'album_ref',
+      'aOAlbums_ref'),
+
+    // pluck is used due to errors with remove function on subdocuments
+    hooks.pluck(
+      'album.artist',
+      'album._id',
+      'album.title',
+      '_id',
+      'title',
+      'file'
+      )
+  ],
   get: [
     hooks.populate({ schema: includeSchema }),
     hooks.remove(
@@ -61,7 +79,7 @@ exports.after = {
       'album_ref',
       'aOAlbums_ref'),
 
-    //pluck is used due to errors with remove function on subdocuments
+    // pluck is used due to errors with remove function on subdocuments
     hooks.pluck(
       'album.artist',
       'album._id',
