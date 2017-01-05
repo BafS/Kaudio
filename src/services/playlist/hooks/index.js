@@ -30,7 +30,8 @@ const restrictPrivate = function (options) {
             return reject(new errors.NotFound('Playlist does not exist'))
           }
 
-          if (!doc.public) {
+          // If this playlist is not public and the request is not from the owner
+          if (!doc.public && jwt.verify(hook.params.token, app.get('auth').token.secret)._id.toString() !== doc.user_ref.toString()) {
             return reject(new errors.BadRequest('This playlist is not public!'))
           }
 
