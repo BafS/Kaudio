@@ -1,7 +1,5 @@
 'use strict'
 
-// track-model.js - A mongoose model
-
 const idexists = require('mongoose-idexists')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -33,7 +31,8 @@ const trackSchema = new Schema({
   album: Object,
   artist: Object,
 
-  file: ObjectId, // Link to GridFS
+  // Link to GridFS
+  file: ObjectId,
 
   createdAt: { type: Date, 'default': Date.now },
   updatedAt: { type: Date, 'default': Date.now }

@@ -1,7 +1,5 @@
 'use strict'
 
-// playlist-model.js - A mongoose model
-
 const idexists = require('mongoose-idexists')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema

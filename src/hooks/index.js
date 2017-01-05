@@ -1,19 +1,5 @@
 'use strict'
 
-// Add any common hooks you want to share across services in here.
-//
-// Below is an example of how a hook is written and exported. Please
-// see http://docs.feathersjs.com/hooks/readme.html for more details
-// on hooks.
-
-// https://github.com/feathersjs/feathers-hooks-common
-
-// exports.myHook = function (options) {
-//   return function (hook) {
-//     console.log('My custom global hook ran.')
-//   }
-// }
-
 const MongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
 const errors = require('feathers-errors')
@@ -21,20 +7,22 @@ const feathers = require('feathers')
 const configuration = require('feathers-configuration')
 const app = feathers().configure(configuration(__dirname))
 
+/**
+ * Returns a promise that create a DB connection if successful.
+ */
 exports.connection = new Promise((resolve, reject) => {
   MongoClient.connect(app.get('mongodb'), function (err, db) {
     if (err) {
       return reject(err)
     }
-
     resolve(db)
   })
 })
 
-const defaults = {}
-
-// Possibility to perform a search on the given field
-// Eg: `/users?email[$search]=alice`
+/**
+ * Possibility to perform a search on the given field
+ * Eg: `/users?email[$search]=alice`
+ */
 exports.searchRegex = function () {
   return (hook) => {
     const query = hook.params.query
@@ -47,14 +35,12 @@ exports.searchRegex = function () {
   }
 }
 
-exports.updateDate = function (options) {
-  return function (hook) {
-    hook.data.updatedAt = new Date()
-  }
-}
-
+/**
+ * Checks that the year entered in a year field has the proper
+ * format (e.g. 2015) and not an other format such as UNIX time.
+ */
 exports.checkYear = function (options) {
-  options = Object.assign({}, defaults, options)
+  options = Object.assign({}, {}, options)
   const errors = require('feathers-errors')
   const MIN_YEAR = 1700
   const CUR_YEAR = new Date().getFullYear()
@@ -75,6 +61,12 @@ exports.checkYear = function (options) {
   }
 }
 
+/**
+ * Translates an ID of an object in a given service to the
+ * ID of the original object.
+ * e.g. /audios/[trackId] will translate the trackId to the
+ * correct audioId for the DB request on the audios collection.
+ */
 exports.replaceId = function (service, field) {
   return function (hook) {
     return exports.connection.then(db => {
@@ -86,6 +78,7 @@ exports.replaceId = function (service, field) {
             return reject(err)
           }
 
+          // The registered ID was wrong or the file hase been deleted
           if (doc === null) {
             return reject(new errors.BadRequest('Yikes! This file doesn\'t seem to exist...'))
           }
@@ -99,6 +92,9 @@ exports.replaceId = function (service, field) {
   }
 }
 
+/**
+ * Returns a boolean indicating if a field is empty
+ */
 exports.isEmpty = function (field) {
   return function (hook) {
     return hook.result[field].length === 0

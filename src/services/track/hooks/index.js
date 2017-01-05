@@ -4,6 +4,10 @@ const globalHooks = require('../../../hooks')
 const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
+/**
+ * Add albums and artists so a single request from
+ * front end is needed
+ */
 const includeSchema = {
   include: [
     {
@@ -41,10 +45,10 @@ exports.before = {
   get: [],
   create: [],
   update: [
-    globalHooks.updateDate()
+    hooks.setUpdatedAt('updatedAt')
   ],
   patch: [
-    globalHooks.updateDate()
+    hooks.setUpdatedAt('updatedAt')
   ],
   remove: []
 }

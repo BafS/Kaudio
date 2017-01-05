@@ -1,7 +1,5 @@
 'use strict'
 
-// user-model.js - A mongoose model
-
 const idexists = require('mongoose-idexists')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
@@ -11,13 +9,15 @@ const userSchema = new Schema({
   facebookId: { type: String },
   facebook: { type: Schema.Types.Mixed },
 
-  email: { type: String, required: true, unique: true }, // require
-  password: { type: String, required: true }, // require
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
   name: String,
   age: Number,
   country: String,
   city: String,
-  picture: String, // url to online picture
+
+  // url to online picture
+  picture: String,
 
   friends_ref: [{
     type: ObjectId,

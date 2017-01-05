@@ -10,6 +10,9 @@ const feathers = require('feathers')
 const configuration = require('feathers-configuration')
 const app = feathers().configure(configuration(__dirname))
 
+/**
+ * Restrict private playlists from GET
+ */
 const restrictPrivate = function (options) {
   return function (hook) {
     return globalHooks.connection.then(db => {
@@ -38,11 +41,16 @@ const restrictPrivate = function (options) {
   }
 }
 
+/**
+ * Check that the current user does not already have a playlist with this name
+ */
 const checkNotExisting = function (options) {
   return function (hook) {
     return globalHooks.connection.then(db => {
       const collection = db.collection('playlists')
 
+      // Manual token verification is done to be able to get identity of user
+      // as well as authentify them
       let token = jwt.verify(hook.params.token, app.get('auth').token.secret)
 
       let searchQuery = {}
@@ -66,6 +74,9 @@ const checkNotExisting = function (options) {
   }
 }
 
+/**
+ * Hide private playlists from FIND
+ */
 const excludePrivate = function (options) {
   return function (hook) {
     hook.params.query.public = true
@@ -73,6 +84,10 @@ const excludePrivate = function (options) {
   }
 }
 
+/**
+ * Add users, tracks, albums and artists
+ * so a single request from front end is needed
+ */
 const includeSchema = {
   include: [
     {
@@ -127,14 +142,20 @@ exports.before = {
     globalHooks.searchRegex(),
     hooks.removeQuery('user', 'tracks')
   ],
-  find: [excludePrivate()],
-  get: [restrictPrivate()],
-  create: [checkNotExisting()],
+  find: [
+    excludePrivate()
+  ],
+  get: [
+    restrictPrivate()
+  ],
+  create: [
+    checkNotExisting()
+  ],
   update: [
-    globalHooks.updateDate()
+    hooks.setUpdatedAt('updatedAt')
   ],
   patch: [
-    globalHooks.updateDate()
+    hooks.setUpdatedAt('updatedAt')
   ],
   remove: []
 }

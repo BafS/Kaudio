@@ -5,6 +5,10 @@ const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 const ObjectId = require('mongodb').ObjectID
 
+/**
+ * Add friends so a single request from
+ * front end is needed
+ */
 const includeSchema = {
   include: [
     {
@@ -20,6 +24,11 @@ const includeSchema = {
   ]
 }
 
+/**
+ * Keep current password if password is
+ * not given in a PUT from the front end
+ * (i.e. user wished to keep the same password)
+ */
 const keepPassword = function (app) {
   return function (hook, next) {
     if (hook.data.password === undefined) {
@@ -53,7 +62,6 @@ exports.before = function (app) {
       auth.verifyToken(),
       auth.populateUser(),
       auth.restrictToAuthenticated()
-      // auth.restrictToOwner({ ownerField: '_id' })
     ],
     create: [
       auth.hashPassword()
@@ -64,7 +72,7 @@ exports.before = function (app) {
       auth.populateUser(),
       auth.restrictToAuthenticated(),
       auth.restrictToOwner({ ownerField: '_id' }),
-      globalHooks.updateDate(),
+      hooks.setUpdatedAt('updatedAt'),
       keepPassword(app)
     ],
     patch: [
@@ -73,7 +81,7 @@ exports.before = function (app) {
       auth.populateUser(),
       auth.restrictToAuthenticated(),
       auth.restrictToOwner({ ownerField: '_id' }),
-      globalHooks.updateDate()
+      hooks.setUpdatedAt('updatedAt')
     ],
     remove: [
       auth.verifyToken(),

@@ -1,7 +1,6 @@
 'use strict'
 
 const globalHooks = require('../../../hooks')
-const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
 
 const addTokenToHeaders = function (options) {
@@ -26,7 +25,6 @@ exports.before = {
   find: [],
   get: [
     globalHooks.replaceId('tracks', 'file')
-    // globalHooks.checkIfExists('audioExtensions')
   ],
   create: [],
   update: [],

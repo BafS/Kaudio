@@ -12,7 +12,6 @@ const musicmetadata = require('musicmetadata')
 const globalHooks = require('../hooks')
 const errors = require('feathers-errors')
 const ObjectId = require('mongodb').ObjectID
-const jwt = require('jsonwebtoken')
 const auth = require('feathers-authentication').hooks
 
 /**
@@ -29,10 +28,12 @@ const getDBref = function (app, service, searchObj) {
           return reject(err)
         }
 
+        // If it exists, return it
         if (doc) {
           return resolve(doc)
         }
 
+        // Otherwise, create a new one and return it
         return resolve(app.service(service).create(searchObj))
       })
     })
@@ -40,9 +41,9 @@ const getDBref = function (app, service, searchObj) {
 }
 
 /**
- *Adds the ObjectId refs in the DB
+ * Adds the ObjectId refs in the DB
  */
-const addDBref = function (app, service, objToEdit, field, isArray, referencedObj) {
+const addDBref = function (service, objToEdit, field, isArray, referencedObj) {
   return globalHooks.connection.then(db => {
     const collection = db.collection(service)
     return new Promise((resolve, reject) => {
@@ -53,20 +54,27 @@ const addDBref = function (app, service, objToEdit, field, isArray, referencedOb
 
         if (isArray) {
           for (let i = 0; i < doc[field].length; ++i) {
+            // If it is already referenced, return it
             if (String(doc[field][i]) === String(referencedObj._id)) {
               return resolve(doc)
             }
           }
 
+          // Otherwise add the reference
           let newVal = doc[field]
           newVal.push(referencedObj._id)
           doc[field] = newVal
         } else {
+          // If it is already referenced, return it
           if (doc[field] === referencedObj._id) {
             return resolve(doc)
           }
+
+          // Otherwise add the reference
           doc[field] = referencedObj._id
         }
+
+        // Once it has been updated, search and return it
         collection.findOneAndUpdate({ _id: objToEdit._id }, doc, function (err1, doc1) {
           if (err1) {
             return reject(err1)
@@ -79,7 +87,9 @@ const addDBref = function (app, service, objToEdit, field, isArray, referencedOb
 }
 
 /**
- * Adds the data in the hook, so multipart/form-data is seen as one single object
+ * Adds the upload data in the hook,
+ * so multipart/form-data is seen as one single object
+ * on the server side
  */
 const putDataInHook = function (options) {
   return function (hook) {
@@ -93,6 +103,7 @@ const putDataInHook = function (options) {
 
 /**
  * Checks if the album/artist/track combinantion already exists
+ * If it does, throw and exception, stopping the DB insertion
  */
 const checkOneTrack = function (metadata) {
   return function (res) {
@@ -121,6 +132,7 @@ const checkAudioNotExisting = function (filePath, app, fileId) {
             return reject(err)
           }
 
+          // If there are non, all is good
           if (docs.length === 0) {
             return resolve()
           }
@@ -128,14 +140,17 @@ const checkAudioNotExisting = function (filePath, app, fileId) {
           let objId
           let promise = []
 
+          // If there are tracks with same name, check each one to see if identical
           for (let i = 0; i < docs.length; ++i) {
             objId = ObjectId(docs[i]._id)
             promise.push(app.service('tracks').get({ _id: objId }).then(checkOneTrack(metadata)))
           }
 
+          // If no exception has been noticed in checkOneTrack(), return
           Promise.all(promise).then(values => {
             return resolve()
           })
+            // Duplicate has been found, delete the last inserted document
             .catch(err => {
               let id = new ObjectId(fileId)
               return db.collection('fs.files').remove({ _id: id }, function (err1) {
@@ -174,21 +189,21 @@ const addAudioRefs = function (app, gfs, fileId) {
         })
         .then(function (res) {
           track = res
-          return addDBref(app, 'artists', artist, 'albums_ref', true, album)
+          return addDBref('artists', artist, 'albums_ref', true, album)
         })
         .then(function (res) {
-          return addDBref(app, 'albums', album, 'artist_ref', false, artist)
+          return addDBref('albums', album, 'artist_ref', false, artist)
         })
         .then(function (res) {
-          return addDBref(app, 'albums', album, 'tracks_ref', true, track)
+          return addDBref('albums', album, 'tracks_ref', true, track)
         })
         .then(function (res) {
-          return addDBref(app, 'tracks', track, 'album_ref', false, album)
+          return addDBref('tracks', track, 'album_ref', false, album)
         })
         .then(function (res) {
           let fileObj = {}
           fileObj._id = fileId
-          return addDBref(app, 'tracks', track, 'file', false, fileObj)
+          return addDBref('tracks', track, 'file', false, fileObj)
         })
         .then(function (res) {
           return Promise.resolve(res)
@@ -201,45 +216,7 @@ const addAudioRefs = function (app, gfs, fileId) {
 }
 
 /**
- * Add new user image references and delete old ones if needed
- */
-const replaceUserImage = function (filePath, app, fileId, token) {
-  return globalHooks.connection.then(db => {
-    const userCollection = db.collection('users')
-    const fileCollections = db.collection('fs.files')
-
-    return new Promise((resolve, reject) => {
-      let id = ObjectId(jwt.verify(token, app.get('auth').token.secret)._id)
-
-      return userCollection.findOne({ _id: id }, function (err, doc) {
-        if (err) {
-          return reject(err)
-        }
-
-        if (doc === null) {
-          return reject(new errors.BadRequest('This token does not belong to any known user'))
-        }
-
-        if (doc.picture !== undefined) {
-          let pictureId = ObjectId(doc.picture)
-
-          // delete the old picture
-          return fileCollections.remove({ _id: pictureId }, function (err1) {
-            if (err1) {
-              return reject(err1)
-            }
-            return addDBref(app, 'users', doc, 'picture', false, { _id: fileId })
-          })
-        }
-        return addDBref(app, 'users', doc, 'picture', false, { _id: fileId })
-      })
-    })
-  })
-}
-
-/**
- * Pipes the file to DB and adds references depending
- * on the file type (picture or audio)
+ * Pipes an uploaded file to DB
  */
 const pipeToDB = function (app) {
   return function (hook) {
@@ -277,10 +254,11 @@ const pipeToDB = function (app) {
             })
           break
         case 'image':
+          // delete the file from FS
           fs.unlinkSync(filePath)
           throw new errors.BadRequest('This functionnality has been removed!')
         default:
-          // delete the file from FS (it is now in DB)
+          // delete the file from FS
           fs.unlinkSync(filePath)
           throw new errors.BadRequest('Unexpected mimetype')
       }
@@ -288,6 +266,9 @@ const pipeToDB = function (app) {
   }
 }
 
+/**
+ * Pipe files from local FS folder to DB
+ */
 const pipeLocalFilesToDB = function (app) {
   return function (hook, next) {
     let p = hook.data.path
@@ -317,6 +298,8 @@ const pipeLocalFilesToDB = function (app) {
         return fs.statSync(filePath).isFile()
       }).filter(function (filePath) {
         for (let i = 0; i < audioExtensions.length; ++i) {
+          // Only add files with the proper extension
+          // (i.e. not all the files in folder)
           if (filePath.split('.').pop() === audioExtensions[i]) {
             return true
           }
@@ -339,12 +322,16 @@ const pipeLocalFilesToDB = function (app) {
             .then(addAudioRefs(app, gfs, file._id))
             .then(function (res) {
               hook.data.filesOk++
+
+              // All usefull files have been checked
               if (++filesReviewed === map.length) {
                 next()
               }
             })
             .catch(function (err) {
               hook.data.filesFailed++
+
+              // All usefull files have been checked
               if (++filesReviewed === map.length) {
                 next()
               }

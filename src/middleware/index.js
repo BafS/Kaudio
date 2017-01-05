@@ -17,35 +17,37 @@ const Grid = require('gridfs-stream')
 Grid.mongo = mongoose.mongo
 
 module.exports = function () {
-  // Add your custom middleware here. Remember, that
-  // just like Express the order matters, so error
-  // handling middleware should go last.
   const app = this
 
+  // Store uploaded blob to DB
   app.use('/uploads',
     multipartMiddleware.single('uri'),
 
     function (req, res, next) {
       req.feathers.file = req.file
-
       next()
     },
 
     blobService({ Model: blobStorage })
   )
 
+  // Configure before and after hooks
   app.service('/uploads').before(uploads.prepareUpload(app))
   app.service('/uploads').after(uploads.cleanUpUpload(app))
 
+  // Count number of failed and successfull uploads from
+  // local directory
   app.use('/localuploads', {
     create (data, params) {
       return Promise.resolve({ added: data.filesOk, failed: data.filesFailed })
     }
   })
 
+  // Configure before and after hooks
   app.service('/localuploads').before(uploads.prepareLocalUpload(app))
   app.service('/localuploads').after(uploads.cleanUpLocalUpload(app))
 
+  // Error handling
   app.use(notFound())
   app.use(logger(app))
   app.use(handler())

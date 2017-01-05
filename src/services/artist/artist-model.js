@@ -1,16 +1,18 @@
 'use strict'
 
-// artist-model.js - A mongoose model
-
 const idexists = require('mongoose-idexists')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = Schema.Types.ObjectId
 
 const artistSchema = new Schema({
-  name: { type: String, required: true }, // require
-  year: Number, // start year (e.g.:2002)
-  origin: String, // City, State, Country
+  name: { type: String, required: true },
+
+  // start year (e.g.:2002)
+  year: Number,
+
+  // City, State, Country
+  origin: String,
 
   // published by the artist
   albums_ref: [{

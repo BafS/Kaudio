@@ -1,11 +1,12 @@
 'use strict'
 
-const globalHooks = require('../../../hooks')
-const hooks = require('feathers-hooks-common')
 const auth = require('feathers-authentication').hooks
-const errors = require('feathers-errors')
 
-
+/**
+ * Get results from tracks, albums, artists and playlists
+ * services and return them. This avoids having to call
+ * the server multiple times from the front end
+ */
 const callInternalServices = function (app) {
   return function (hook, next) {
     hook.result = {}
@@ -50,9 +51,9 @@ const callInternalServices = function (app) {
 exports.before = function (app) {
   return {
     all: [
-      //auth.verifyToken(),
-      //auth.populateUser(),
-      //auth.restrictToAuthenticated()
+      auth.verifyToken(),
+      auth.populateUser(),
+      auth.restrictToAuthenticated()
     ],
     find: [],
     get: [],
@@ -67,7 +68,9 @@ exports.after = function (app) {
   return {
     all: [],
     find: [],
-    get: [callInternalServices(app)],
+    get: [
+      callInternalServices(app)
+    ],
     create: [],
     update: [],
     patch: [],

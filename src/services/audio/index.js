@@ -7,7 +7,7 @@ const streamToPromise = require('stream-to-promise')
 Grid.mongo = mongoose.mongo
 
 class Service {
-  constructor(options) {
+  constructor (options) {
     this.options = options || {}
   }
 
@@ -24,7 +24,7 @@ class Service {
     return Promise.resolve(streamToPromise(readstream))
   }
 
-  create(data, params) {
+  create (data, params) {
     if (Array.isArray(data)) {
       return Promise.all(data.map(current => this.create(current)))
     }
@@ -32,15 +32,15 @@ class Service {
     return Promise.resolve(data)
   }
 
-  update(id, data, params) {
+  update (id, data, params) {
     return Promise.resolve(data)
   }
 
-  patch(id, data, params) {
+  patch (id, data, params) {
     return Promise.resolve(data)
   }
 
-  remove(id, params) {
+  remove (id, params) {
     return Promise.resolve({ id })
   }
 }
