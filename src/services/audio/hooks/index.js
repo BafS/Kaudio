@@ -25,8 +25,8 @@ exports.before = {
   ],
   find: [],
   get: [
-    globalHooks.replaceId('tracks', 'file'),
-    globalHooks.checkIfExists('audioExtensions')
+    globalHooks.replaceId('tracks', 'file')
+    // globalHooks.checkIfExists('audioExtensions')
   ],
   create: [],
   update: [],

@@ -12,8 +12,8 @@ exports.before = {
   ],
   find: [],
   get: [
-    globalHooks.replaceId('users', 'picture'),
-    globalHooks.checkIfExists('pictureExtensions')
+    globalHooks.replaceId('users', 'picture')
+    // globalHooks.checkIfExists('pictureExtensions')
   ],
   create: [],
   update: [],
