@@ -75,44 +75,6 @@ exports.checkYear = function (options) {
   }
 }
 
-exports.checkIfExists = function (options) {
-  return function (hook) {
-    let extensions = app.get(options)
-
-    return exports.connection.then(db => {
-      const audioCollection = db.collection('fs.files')
-
-      let objId = new ObjectId(hook.id)
-
-      return audioCollection.count({ _id: objId }).then(res => {
-        if (res === 0) {
-          return Promise.reject(new errors.BadRequest('Yikes! This file doesn\'t seem to exist...'))
-        }
-
-        return new Promise((resolve, reject) => {
-          audioCollection.find({ _id: objId }).toArray(function (err, docs) {
-            if (err) {
-              return reject(err)
-            }
-
-            let filename = docs[0].filename
-            let splitFilename = filename.split('.')
-            let fileExtension = splitFilename[splitFilename.length - 1]
-
-            for (let i = 0; i < extensions.length; i++) {
-              if (extensions[i] == fileExtension) {
-                return resolve(hook)
-              }
-            }
-
-            return reject(new errors.BadRequest('Yikes! This file doesn\'t seem to have the right extension...'))
-          })
-        })
-      })
-    })
-  }
-}
-
 exports.replaceId = function (service, field) {
   return function (hook) {
     return exports.connection.then(db => {
