@@ -277,16 +277,8 @@ const pipeToDB = function (app) {
             })
           break
         case 'image':
-          replaceUserImage(filePath, app, fileId, hook.params.token)
-            .then(function (res) {
-              // delete the file from FS (it is now in DB)
-              fs.unlinkSync(filePath)
-              return res
-            })
-            .catch(function (err) {
-              console.log(err)
-            })
-          break
+          fs.unlinkSync(filePath)
+          throw new errors.BadRequest('This functionnality has been removed!')
         default:
           // delete the file from FS (it is now in DB)
           fs.unlinkSync(filePath)

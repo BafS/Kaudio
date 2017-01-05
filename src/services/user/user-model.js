@@ -17,7 +17,7 @@ const userSchema = new Schema({
   age: Number,
   country: String,
   city: String,
-  picture: ObjectId, // Link to GridFS
+  picture: String, // url to online picture
 
   friends_ref: [{
     type: ObjectId,
