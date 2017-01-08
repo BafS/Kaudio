@@ -86,6 +86,17 @@ const excludePrivate = function (options) {
 }
 
 /**
+ * Add the user ref for newly created playlists
+ */
+const addUserRef = function (options) {
+  return function (hook) {
+    let token = jwt.verify(hook.params.token, app.get('auth').token.secret)
+    hook.data.user_ref = token._id
+    return hook
+  }
+}
+
+/**
  * Add users, tracks, albums and artists
  * so a single request from front end is needed
  */
@@ -150,7 +161,8 @@ exports.before = {
     restrictPrivate()
   ],
   create: [
-    checkNotExisting()
+    checkNotExisting(),
+    addUserRef()
   ],
   update: [
     hooks.setUpdatedAt('updatedAt')
