@@ -97,6 +97,45 @@ const addUserRef = function (options) {
 }
 
 /**
+ * Allows a patch on tracks_ref array with just one element to add or remove
+ * for more info: http://jsonpatch.com
+ */
+const jsonPatch = function (options) {
+  return function (hook) {
+    if (hook.data.path === '/tracks_ref') {
+      return globalHooks.connection.then(db => {
+        const collection = db.collection('playlists')
+        let id, ref
+        try {
+          id = new ObjectId(hook.id)
+          ref = new ObjectId(hook.data.value)
+        } catch (err) {
+          return Promise.reject(new errors.BadRequest('Id is not valid!'))
+        }
+        switch (hook.data.op) {
+          case 'add':
+            collection.findOneAndUpdate({ _id: id }, { '$push': { 'tracks_ref': ref } }, { new: true }, function (err, doc) {
+              if (err) {
+                throw err
+              }
+            })
+            break
+          case 'remove':
+            collection.findOneAndUpdate({ _id: id }, { '$pull': { 'tracks_ref': ref } }, { new: true }, function (err, doc) {
+              if (err) {
+                throw err
+              }
+            })
+            break
+          default:
+            return Promise.reject(new errors.BadRequest('op: ' + hook.data.op + ' unknown'))
+        }
+      })
+    }
+  }
+}
+
+/**
  * Add users, tracks, albums and artists
  * so a single request from front end is needed
  */
@@ -168,6 +207,7 @@ exports.before = {
     hooks.setUpdatedAt('updatedAt')
   ],
   patch: [
+    jsonPatch(),
     hooks.setUpdatedAt('updatedAt')
   ],
   remove: []
