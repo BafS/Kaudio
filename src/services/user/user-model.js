@@ -15,6 +15,7 @@ const userSchema = new Schema({
   age: Number,
   country: String,
   city: String,
+  status: String,
 
   // url to online picture
   picture: String,
