@@ -81,6 +81,7 @@ exports.before = function (app) {
       auth.populateUser(),
       auth.restrictToAuthenticated(),
       auth.restrictToOwner({ ownerField: '_id' }),
+      globalHooks.jsonPatch('users'),
       hooks.setUpdatedAt('updatedAt')
     ],
     remove: [

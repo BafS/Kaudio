@@ -100,3 +100,46 @@ exports.isEmpty = function (field) {
     return hook.result[field].length === 0
   }
 }
+
+/**
+ * Allows a patch on tracks_ref array with just one element to add or remove
+ * for more info: http://jsonpatch.com
+ */
+exports.jsonPatch = function (options) {
+  return function (hook) {
+    if (hook.data.path !== undefined && hook.data.op !== undefined && hook.data.value !== undefined) {
+      return exports.connection.then(db => {
+        const collection = db.collection(options)
+        let id, ref, path, updateObj
+        try {
+          id = new ObjectId(hook.id)
+          ref = new ObjectId(hook.data.value)
+          path = hook.data.path.split('/')[1]
+          updateObj = {}
+          updateObj[path] = ref
+        } catch (err) {
+          return Promise.reject(new errors.BadRequest('Id is not valid!'))
+        }
+        switch (hook.data.op) {
+          case 'add':
+            collection.findOneAndUpdate({ _id: id }, { '$push': updateObj }, { new: true }, function (err, doc) {
+              if (err) {
+                throw err
+              }
+            })
+            break
+          case 'remove':
+            collection.findOneAndUpdate({ _id: id }, { '$pull': updateObj }, { new: true }, function (err, doc) {
+              if (err) {
+                throw err
+              }
+            })
+            break
+          default:
+            return Promise.reject(new errors.BadRequest('op: ' + hook.data.op + ' unknown'))
+        }
+      })
+    }
+    return hook
+  }
+}
