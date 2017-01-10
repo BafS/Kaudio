@@ -267,6 +267,41 @@ const pipeToDB = function (app) {
 }
 
 /**
+ * Walks through the specified directory
+ * and sub-directories and adds files
+ * to result before executing callback
+ * source: http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search#5827895
+ */
+const walk = function (dir, done) {
+  let results = []
+  fs.readdir(dir, function (err, list) {
+    if (err) return done(err)
+    let pending = list.length
+    if (!pending) return done(null, results)
+    list.forEach(function (file) {
+      file = path.resolve(dir, file)
+      fs.stat(file, function (err, stat) {
+        if (err) {
+          throw err
+        }
+        if (stat && stat.isDirectory()) {
+          walk(file, function (err, res) {
+            if (err) {
+              throw err
+            }
+            results = results.concat(res)
+            if (!--pending) done(null, results)
+          })
+        } else {
+          results.push(file)
+          if (!--pending) done(null, results)
+        }
+      })
+    })
+  })
+}
+
+/**
  * Pipe files from local FS folder to DB
  */
 const pipeLocalFilesToDB = function (app) {
@@ -285,18 +320,14 @@ const pipeLocalFilesToDB = function (app) {
       throw new errors.BadRequest('Path is not accessible!')
     }
 
-    fs.readdir(p, function (err, files) {
+    walk(p, function (err, files) {
       if (err) {
         throw err
       }
 
       let audioExtensions = app.get('audioExtensions')
 
-      let map = files.map(function (filePath) {
-        return path.join(p, filePath)
-      }).filter(function (filePath) {
-        return fs.statSync(filePath).isFile()
-      }).filter(function (filePath) {
+      let map = files.filter(function (filePath) {
         for (let i = 0; i < audioExtensions.length; ++i) {
           // Only add files with the proper extension
           // (i.e. not all the files in folder)
