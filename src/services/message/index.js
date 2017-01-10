@@ -47,19 +47,21 @@ module.exports = function () {
   // Get our initialize service to that we can bind hooks
   const messageService = app.service('/messages')
 
+  // Send messages only to people who "follow" you (people who have yourself as a friend)
   messageService.filter(function (data, connection, hook) {
-    // console.log('-FILTER-')
-
     const messageUserId = hook.params.user._id
-    const currentUserFriends = connection.user.friends // Array
+    const currentUserFriends = connection.user.friends // Array<User>
 
-    // console.log(messageUserId)
-    // console.log(currentUserFriends)
+    //console.log('me', hook.params.user)
+    //console.log(currentUserFriends)
 
     // Check friendship
-    // if (currentUserFriends.indexOf(messageUserId) === -1) {
-    if (currentUserFriends.includes(messageUserId)) {
-      console.log('no')
+    const matches = currentUserFriends.filter(o => messageUserId.equals(o._id))
+    // console.log(matches)
+
+    // Do not send if nobody follow you
+    if (!matches.length) {
+      // console.log('no')
       return false
     }
 
