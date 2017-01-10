@@ -117,6 +117,7 @@ const includeSchema = {
       parentField: 'tracks_ref',
       childField: '_id',
       query: {
+        $limit: 9999,
         $select: ['_id', 'title', 'album_ref']
       },
       asArray: true,

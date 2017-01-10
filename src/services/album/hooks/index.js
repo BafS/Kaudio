@@ -25,6 +25,7 @@ const includeSchema = {
       parentField: 'tracks_ref',
       childField: '_id',
       query: {
+        $limit: 999,
         $select: ['_id', 'title']
       },
       asArray: true

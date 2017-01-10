@@ -17,6 +17,7 @@ const includeSchema = {
       parentField: 'friends_ref',
       childField: '_id',
       query: {
+        $limit: 999,
         $select: ['_id', 'email', 'name']
       },
       asArray: true

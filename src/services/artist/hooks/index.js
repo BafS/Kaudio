@@ -16,6 +16,7 @@ const includeSchema = {
       parentField: 'albums_ref',
       childField: '_id',
       query: {
+        $limit: 999,
         $select: ['_id', 'title']
       },
       asArray: true
@@ -26,6 +27,7 @@ const includeSchema = {
       parentField: 'aOAlbums_ref',
       childField: '_id',
       query: {
+        $limit: 999,
         $select: ['_id', 'title']
       },
       asArray: true
@@ -36,6 +38,7 @@ const includeSchema = {
       parentField: 'persons_ref',
       childField: '_id',
       query: {
+        $limit: 999,
         $select: ['_id', 'name']
       },
       asArray: true

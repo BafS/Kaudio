@@ -16,6 +16,7 @@ const includeSchema = {
       parentField: 'artists_ref',
       childField: '_id',
       query: {
+        $limit: 999,
         $select: ['_id', 'name']
       },
       asArray: true
