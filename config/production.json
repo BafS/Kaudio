@@ -9,13 +9,12 @@
     },
     "local": {},
     "facebook": {
-      "clientID": "your facebook client id",
-      "clientSecret": "your facebook client secret",
+      "clientID": "1905242289706539",
+      "clientSecret": "9f4d44c3cd3c413ba54b66d1b8656727",
       "permissions": {
-        "scope": ["public_profile","email"]
+        "scope": ["public_profile", "email"]
       }
     }
   },
-  "audioExtensions": ["mp3", "ogg", "m4a", "wma"],
-  "pictureExtensions": ["jpg", "png"]
+  "audioExtensions": ["mp3", "ogg", "wav"]
 }
