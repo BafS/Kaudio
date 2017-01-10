@@ -122,12 +122,30 @@ exports.jsonPatch = function (options) {
         }
         switch (hook.data.op) {
           case 'add':
-            collection.findOneAndUpdate({ _id: id }, { '$push': updateObj }, { new: true }, function (err, doc) {
-              if (err) {
-                throw err
-              }
+            return new Promise((resolve, reject) => {
+              collection.findOne({ _id: id }, function (err, doc) {
+                if (err) {
+                  throw err
+                }
+
+                console.log('LENGTH: ' + doc[path].length)
+                console.log('REF:    ' + ref)
+
+                for (let i = 0; i < doc[path].length; ++i) {
+                  console.log('FOR:    ' + doc[path][i])
+                  if (doc[path][i].equals(ref)) {
+                    return reject(new errors.BadRequest('This element is already present in ' + options + ' list.'))
+                  }
+                }
+
+                collection.findOneAndUpdate({ _id: id }, { '$push': updateObj }, { new: true }, function (err1, doc1) {
+                  if (err1) {
+                    throw err1
+                  }
+                  return resolve()
+                })
+              })
             })
-            break
           case 'remove':
             collection.findOneAndUpdate({ _id: id }, { '$pull': updateObj }, { new: true }, function (err, doc) {
               if (err) {
