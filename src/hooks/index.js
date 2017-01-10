@@ -135,7 +135,6 @@ exports.jsonPatch = function (options) {
                 }
 
                 for (let i = 0; i < doc[path].length; ++i) {
-                  console.log('FOR:    ' + doc[path][i])
                   if (doc[path][i].equals(ref)) {
                     return reject(new errors.BadRequest('This element is already present in ' + options + ' list.'))
                   }

@@ -37,7 +37,6 @@ const keepPassword = function (app) {
       app.service('users').get({ _id: id })
         .then(function (res) {
           hook.data.password = res.password
-          console.log('data:' + JSON.stringify(hook.data, null, 2))
           next()
         })
         .catch(function (err) {

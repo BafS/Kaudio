@@ -235,8 +235,6 @@ const pipeToDB = function (app) {
 
     let filePath = storagePath + '/' + hook.result.id
 
-    console.log(filePath)
-
     fs.createReadStream(filePath).pipe(writestream)
 
     writestream.on('close', function (file) {
