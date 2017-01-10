@@ -65,6 +65,8 @@ module.exports = function () {
       return false
     }
 
+    data.sender = { email: hook.params.user.email, name: hook.params.user.name }
+
     return data
   })
 
