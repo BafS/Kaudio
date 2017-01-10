@@ -1,0 +1,451 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Kaudio API
+  description: |-
+    Kaudio API
+
+    https://github.com/BafS/Kaudio
+  license:
+    name: MIT
+    url: 'http://github.com/gruntjs/grunt/blob/master/LICENSE-MIT'
+host: 'localhost:3030'
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /albums:
+    get:
+      description: >-
+        Get a list of all albums.
+      tags:
+        - Albums
+      operationId: Find albums
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+      responses:
+        '200':
+          description: An array of available albums
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Album'
+  /albums/{id}:
+    get:
+      description: >-
+        Get a requested album.
+      tags:
+        - Albums
+      operationId: Get album
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+        - $ref: '#/parameters/id'
+
+      responses:
+        '200':
+          description: The requested album
+          schema:
+            $ref: '#/definitions/Album'
+            
+  /artists:
+    get:
+      description: >-
+        Get a list of all artists.
+      tags:
+        - Artists
+      operationId: Find artists
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+      responses:
+        '200':
+          description: An array of available artists
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Artist'
+  /artists/{id}:
+    get:
+      description: >-
+        Get a requested artist.
+      tags:
+        - Artists
+      operationId: Get artist
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+        - $ref: '#/parameters/id'
+
+      responses:
+        '200':
+          description: The requested artist
+          schema:
+            $ref: '#/definitions/Artist'
+            
+            
+  /audios/{id}:
+    get:
+      description: >-
+        Get a requested track file.
+      tags:
+        - Audios
+      operationId: Get audio
+      parameters:
+        - $ref: '#/parameters/token'
+        - $ref: '#/parameters/id'
+
+      responses:
+        '200':
+          description: The requested audio file
+          schema:
+            type: file
+            
+  /localuploads:
+    post:
+      description: >-
+        Specify path on server FS where music files are stored.
+      tags:
+        - Audios
+      operationId: Create audios
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+        - name: path
+          in: body
+          description: Minimal user properties
+          required: true
+          schema:
+            type: object
+            properties:
+              path:
+                type: string
+      responses:
+        '201':
+          description: The number of files uploaded to DB and ones that failed
+          schema:
+            type: object
+            properties:
+              added:
+                type: number
+                format: int32
+              failed:
+                type: number
+                format: int32
+            
+            
+  /playlists:
+    get:
+      description: >-
+        Get a list of all public playlists.
+      tags:
+        - Playlists
+      operationId: Find playlists
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+      responses:
+        '200':
+          description: An array of available playlists
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Playlist'
+    post:
+      description: >-
+        Create a new playlist.
+      tags:
+        - Playlists
+      operationId: Create playlist
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+        - $ref: '#/parameters/playlist'
+      responses:
+        '201':
+          description: The newly created playlist
+          schema:
+            $ref: '#/definitions/Playlist'
+            
+  
+  /tracks:
+    get:
+      description: >-
+        Get a list of all tracks.
+      tags:
+        - Tracks
+      operationId: Find tracks
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+      responses:
+        '200':
+          description: A list of all available tracks
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Track'
+    
+  /tracks/{id}:
+    get:
+      description: >-
+        Get a requested track.
+      tags:
+        - Tracks
+      operationId: Get track
+      parameters:
+        - $ref: '#/parameters/token'
+        - $ref: '#/parameters/id'
+      responses:
+        '200':
+          description: The requested track
+          schema:
+            $ref: '#/definitions/Track'
+            
+  
+  /search/{keyword}:
+     get:
+      description: >-
+        Search tracks, albums, artists and playlists.
+      tags:
+        - Search
+      operationId: Search
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/token'
+        - name: keyword
+          in: path
+          description: keyword for search
+          required: true
+          type: string
+      responses:
+        '200':
+          description: An object containing one array of each searched service.
+          schema:
+            type: object
+            properties:
+              albums:
+                type: array
+                items:
+                  $ref: '#/definitions/Album'
+              artists:
+                type: array
+                items:
+                  $ref: '#/definitions/Artist'
+              playlists:
+                type: array
+                items:
+                  $ref: '#/definitions/Playlist'
+              tracks:
+                type: array
+                items:
+                  $ref: '#/definitions/Track'
+
+            
+  /users:
+    post:
+      description: >-
+        Register a new user.
+      tags:
+        - Users
+      operationId: Post user
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/user'
+      responses:
+        '201':
+          description: The newly created user
+          schema:
+            $ref: '#/definitions/User'
+            
+            
+  /auth/local:
+    post:
+      description: >-
+        Get a user's token.
+      tags:
+        - Authentication
+      operationId: Get user token
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/user'
+      responses:
+        '201':
+          description: The newly created user
+          schema:
+            $ref: '#/definitions/Token'
+  
+      
+      
+
+definitions:
+  id:
+    type: string
+    format: MongoDB ObjectId
+    
+  PopulatedAlbum:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      title:
+        type: string
+    
+  PopulatedArtist:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      name:
+        type: string
+    
+  PopulatedTrack:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      title:
+        type: string
+        
+  PopulatedUser:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      email:
+        type: string
+
+  Album:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      title:
+        type: string
+      tracks:
+        type: array
+        items:
+          $ref: '#/definitions/PopulatedTrack'
+      artist:
+        $ref: '#/definitions/PopulatedArtist'
+        
+  Artist:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      name:
+        type: string
+      albums:
+        type: array
+        items:
+          $ref: '#/definitions/PopulatedAlbum'
+          
+  Playlist:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      name:
+        type: string
+      public:
+        type: boolean
+      user:
+        $ref: '#/definitions/PopulatedUser'
+      tracks:
+        type: array
+        items:
+          $ref: '#/definitions/Track'
+          
+  Track:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      title:
+        type: string
+      file:
+        $ref: '#/definitions/id'
+      album:
+        $ref: '#/definitions/PopulatedAlbum'
+      
+          
+  Token:
+    type: object
+    properties:
+      token:
+        type: string
+        format: JWT
+          
+  User:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/id'
+      email:
+        type: string
+      friends:
+        type: array
+        items:
+          $ref: '#/definitions/PopulatedUser'
+        
+  
+        
+parameters:
+  token:
+    name: Authorization
+    in: header
+    description: User token
+    required: true
+    type: string
+    format: JWT
+    
+  id:
+    name: id
+    in: path
+    description: ID
+    required: true
+    type: string
+    format: MongoDB ObjectId
+    
+  user:
+    name: user
+    in: body
+    description: Minimal user properties
+    required: true
+    schema:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    
+  playlist:
+    name: playlist
+    in: body
+    description: Minimal playlist properties
+    required: true
+    schema:
+      type: object
+      properties:
+        name:
+          type: string
+        public:
+          type: boolean
+    
