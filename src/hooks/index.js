@@ -113,7 +113,13 @@ exports.jsonPatch = function (options) {
         let id, ref, path, updateObj
         try {
           id = new ObjectId(hook.id)
-          ref = new ObjectId(hook.data.value)
+
+          // if it's a _ref, replace value with ObjectId(value), else assign native value
+          if (hook.data.path.split('_').length > 1 && (hook.data.path.split('_')[1] === 'ref')) {
+            ref = new ObjectId(hook.data.value)
+          } else {
+            ref = hook.data.value
+          }
           path = hook.data.path.split('/')[1]
           updateObj = {}
           updateObj[path] = ref
@@ -127,9 +133,6 @@ exports.jsonPatch = function (options) {
                 if (err) {
                   throw err
                 }
-
-                console.log('LENGTH: ' + doc[path].length)
-                console.log('REF:    ' + ref)
 
                 for (let i = 0; i < doc[path].length; ++i) {
                   console.log('FOR:    ' + doc[path][i])
@@ -148,6 +151,13 @@ exports.jsonPatch = function (options) {
             })
           case 'remove':
             collection.findOneAndUpdate({ _id: id }, { '$pull': updateObj }, { new: true }, function (err, doc) {
+              if (err) {
+                throw err
+              }
+            })
+            break
+          case 'replace':
+            collection.findOneAndUpdate({ _id: id }, { '$set': updateObj }, { new: true }, function (err, doc) {
               if (err) {
                 throw err
               }
