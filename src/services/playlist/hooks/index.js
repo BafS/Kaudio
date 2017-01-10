@@ -163,12 +163,18 @@ exports.before = {
   ],
   create: [
     checkNotExisting(),
+    hooks.remove('user'),
+    hooks.remove('tracks'),
     addUserRef()
   ],
   update: [
+    hooks.remove('user'),
+    hooks.remove('tracks'),
     hooks.setUpdatedAt('updatedAt')
   ],
   patch: [
+    hooks.remove('user'),
+    hooks.remove('tracks'),
     globalHooks.jsonPatch('playlists'),
     hooks.setUpdatedAt('updatedAt')
   ],

@@ -64,7 +64,8 @@ exports.before = function (app) {
       auth.restrictToAuthenticated()
     ],
     create: [
-      auth.hashPassword()
+      auth.hashPassword(),
+      hooks.remove('friends')
     ],
     update: [
       auth.hashPassword(),
@@ -72,6 +73,7 @@ exports.before = function (app) {
       auth.populateUser(),
       auth.restrictToAuthenticated(),
       auth.restrictToOwner({ ownerField: '_id' }),
+      hooks.remove('friends'),
       hooks.setUpdatedAt('updatedAt'),
       keepPassword(app)
     ],
@@ -82,6 +84,7 @@ exports.before = function (app) {
       auth.restrictToAuthenticated(),
       auth.restrictToOwner({ ownerField: '_id' }),
       globalHooks.jsonPatch('users'),
+      hooks.remove('friends'),
       hooks.setUpdatedAt('updatedAt')
     ],
     remove: [
