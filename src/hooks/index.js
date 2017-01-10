@@ -134,6 +134,10 @@ exports.jsonPatch = function (options) {
                   throw err
                 }
 
+                if (doc === null) {
+                  return reject(new errors.BadRequest('This playlist does not exist!'))
+                }
+
                 for (let i = 0; i < doc[path].length; ++i) {
                   if (doc[path][i].equals(ref)) {
                     return reject(new errors.BadRequest('This element is already present in ' + options + ' list.'))
