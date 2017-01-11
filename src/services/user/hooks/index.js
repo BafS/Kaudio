@@ -48,6 +48,30 @@ const keepPassword = function (app) {
   }
 }
 
+/**
+ * Assign admin right only to the first user
+ */
+const assignAdminRights = function (options) {
+  return function (hook, next) {
+    globalHooks.connection.then(db => {
+      const collection = db.collection('users')
+      collection.find({}).toArray(function (err, res) {
+        if (err) {
+          throw err
+        }
+
+        if (res.length === 0) {
+          hook.data.admin = true
+        } else {
+          hook.data.admin = false
+        }
+
+        next()
+      })
+    })
+  }
+}
+
 exports.before = function (app) {
   return {
     all: [],
@@ -65,6 +89,7 @@ exports.before = function (app) {
     ],
     create: [
       auth.hashPassword(),
+      assignAdminRights(),
       hooks.remove('friends')
     ],
     update: [
@@ -74,6 +99,7 @@ exports.before = function (app) {
       auth.restrictToAuthenticated(),
       auth.restrictToOwner({ ownerField: '_id' }),
       hooks.remove('friends'),
+      hooks.remove('admin'),
       hooks.setUpdatedAt('updatedAt'),
       keepPassword(app)
     ],
@@ -85,6 +111,7 @@ exports.before = function (app) {
       auth.restrictToOwner({ ownerField: '_id' }),
       globalHooks.jsonPatch('users'),
       hooks.remove('friends'),
+      hooks.remove('admin'),
       hooks.setUpdatedAt('updatedAt')
     ],
     remove: [

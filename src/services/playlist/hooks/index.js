@@ -212,7 +212,8 @@ exports.after = {
       'user_ref',
       'tracks_ref',
       'createdAt',
-      'updatedAt')],
+      'updatedAt')
+  ],
   remove: []
 }
 
