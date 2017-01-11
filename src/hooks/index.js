@@ -138,6 +138,10 @@ exports.jsonPatch = function (options) {
                   return reject(new errors.BadRequest('This playlist does not exist!'))
                 }
 
+                if (typeof doc[path] !== 'object') {
+                  return reject(new errors.BadRequest('Add operation should only be used on array!'))
+                }
+
                 for (let i = 0; i < doc[path].length; ++i) {
                   if (doc[path][i].equals(ref)) {
                     return reject(new errors.BadRequest('This element is already present in ' + options + ' list.'))
