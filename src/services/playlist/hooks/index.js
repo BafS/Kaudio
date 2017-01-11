@@ -205,7 +205,14 @@ exports.after = {
   ],
   create: [],
   update: [],
-  patch: [],
+  patch: [
+    hooks.populate({ schema: includeSchema }),
+    hooks.remove(
+      '__v',
+      'user_ref',
+      'tracks_ref',
+      'createdAt',
+      'updatedAt')],
   remove: []
 }
 
