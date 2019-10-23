@@ -43,7 +43,7 @@
     "gridfs-stream": "^1.1.1",
     "glob": "^7.1.1",
     "mongodb": "^2.2.19",
-    "mongoose": "^4.6.8",
+    "mongoose": "^5.7.6",
     "mongoose-idexists": "^1.0.5",
     "multer": "^1.2.0",
     "musicmetadata": "^2.0.5",
